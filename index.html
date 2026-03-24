@@ -431,8 +431,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   padding:12px 0;
   border-bottom:1px solid rgba(255,255,255,.05);
   opacity:0;
-  transform:translateY(10px);
   font-family:'Inter',-apple-system,sans-serif;
+  transition:opacity .4s ease;
 }
 .lui-step:last-child{border-bottom:none;}
 
@@ -455,7 +455,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .lui-think-dots span:nth-child(2){animation-delay:.18s;}
 .lui-think-dots span:nth-child(3){animation-delay:.36s;}
 .lui-think-lbl{font-family:'Inter',-apple-system,sans-serif;font-size:12px;font-weight:400;color:rgba(232,232,16,.45);}
-.lui-sact{font-family:'Inter',-apple-system,sans-serif;font-size:13px;font-weight:400;color:rgba(242,242,237,.38);line-height:1.5;letter-spacing:0;}
+.lui-sact{font-family:'Inter',-apple-system,sans-serif;font-size:13px;font-weight:400;color:rgba(242,242,237,.38);line-height:1.5;letter-spacing:0;opacity:0;transition:opacity .35s ease;}
+.lui-sact.act-show{opacity:1;}
 /* Outlined pill status tags */
 .lui-sout{
   font-family:'Inter',-apple-system,sans-serif;
@@ -465,7 +466,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   flex-shrink:0;letter-spacing:0;
   background:transparent;
   border:1px solid;
+  opacity:0;transition:opacity .35s ease;
 }
+.lui-sout.out-show{opacity:1;}
 .lui-sout.ok{border-color:rgba(40,180,100,.35);color:rgba(78,203,130,.75);}
 .lui-sout.esc{border-color:rgba(240,168,74,.35);color:rgba(240,168,74,.75);}
 .lui-sout.hum{border-color:rgba(130,171,240,.35);color:rgba(130,171,240,.75);}
@@ -477,8 +480,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .lui-insight-head{font-family:'Inter',-apple-system,sans-serif;font-size:12px;font-weight:600;color:rgba(232,232,16,.6);letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.07);}
 .lui-insight-item{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);}
 .lui-insight-item:last-child{border-bottom:none;}
-.lui-aitem{opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease;}
-.lui-aitem.aitem-show{opacity:1;transform:translateY(0);}
+.lui-aitem{opacity:0;transition:opacity .4s ease;}
+.lui-aitem.aitem-show{opacity:1;}
 .lui-ii-result{visibility:hidden;height:auto;overflow:hidden;}
 .lui-ii-result.result-show{visibility:visible;animation:fadeUp .3s ease both;}
 .lui-ii-label{font-family:'Inter',-apple-system,sans-serif;font-size:11px;font-weight:400;color:rgba(242,242,237,.3);letter-spacing:.01em;text-transform:uppercase;margin-bottom:4px;}
@@ -2291,12 +2294,11 @@ function runBlockAnim(ui){
   function resetSteps(){
     steps.forEach(s => {
       s.style.opacity = '0';
-      s.style.transform = 'translateY(10px)';
       const act = s.querySelector('.lui-sact');
       const out = s.querySelector('.lui-sout');
       const th  = s.querySelector('.lui-thinking');
-      if(act) act.style.display = 'none';
-      if(out) out.style.display = 'none';
+      if(act) act.classList.remove('act-show');
+      if(out) out.classList.remove('out-show');
       if(th)  th.remove();
     });
   }
@@ -2308,9 +2310,7 @@ function runBlockAnim(ui){
     const out = s.querySelector('.lui-sout');
     const sinfo = s.querySelector('.lui-sinfo');
 
-    s.style.transition = 'opacity .4s ease, transform .4s ease';
     s.style.opacity = '1';
-    s.style.transform = 'translateY(0)';
 
     const th = document.createElement('div');
     th.className = 'lui-thinking';
@@ -2319,8 +2319,8 @@ function runBlockAnim(ui){
 
     setTimeout(() => {
       th.remove();
-      if(act){ act.style.display = 'block'; act.style.animation = 'fadeUp .35s ease both'; }
-      if(out){ out.style.display = 'inline-block'; out.style.animation = 'fadeUp .35s ease both'; }
+      if(act) act.classList.add('act-show');
+      if(out) out.classList.add('out-show');
       setTimeout(() => animStep(idx + 1, onDone), HOLD_MS);
     }, THINK_MS);
   }
