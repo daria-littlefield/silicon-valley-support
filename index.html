@@ -558,6 +558,26 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   color:rgba(242,242,237,.75);
 }
 
+/* Block 3 Terminal */
+.b3-terminal{padding:0;overflow:hidden;}
+.b3-term-header{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);}
+.b3-term-dots{display:flex;gap:5px;}
+.b3-term-dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12);}
+.b3-term-dots span:first-child{background:rgba(255,80,80,.55);}
+.b3-term-dots span:nth-child(2){background:rgba(255,190,50,.55);}
+.b3-term-dots span:last-child{background:rgba(80,200,80,.55);}
+.b3-term-title{font-family:var(--mono);font-size:10px;color:rgba(242,242,237,.3);letter-spacing:.04em;text-transform:uppercase;}
+.b3-term-body{height:320px;overflow:hidden;padding:16px 20px;font-family:var(--mono);font-size:12px;line-height:1.7;color:rgba(242,242,237,.55);display:flex;flex-direction:column;justify-content:flex-end;}
+.b3-term-line{opacity:0;animation:termFadeIn .3s ease forwards;white-space:pre-wrap;}
+.b3-term-line .t-label{color:rgba(232,232,16,.6);}
+.b3-term-line .t-ok{color:rgba(78,203,130,.8);}
+.b3-term-line .t-warn{color:rgba(240,168,74,.8);}
+.b3-term-line .t-err{color:rgba(240,112,112,.8);}
+.b3-term-line .t-info{color:rgba(130,171,240,.8);}
+.b3-term-line .t-dim{color:rgba(242,242,237,.25);}
+.b3-term-line .t-bold{color:rgba(242,242,237,.8);font-weight:500;}
+@keyframes termFadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
 /* A4 Live Dashboard */
 .a4-dashboard{
   border-top:1px solid rgba(232,232,16,.10);
@@ -1290,59 +1310,13 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
     <div class="lblock-ui">
       <div class="lui-shell">
         <div class="lui-body" style="flex-direction:column;gap:0;padding-bottom:0;">
-          <!-- Two-column insights row -->
-          <div class="lui-insight-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:48px;padding:32px 40px 28px;">
-            <div class="lui-insight-col">
-              <div class="lui-insight-head">A4 · Feedback Loop</div>
-              <div class="lui-insight-item lui-aitem">
-                <div class="lui-ii-label">Pattern detected</div>
-                <div class="lui-ii-val">12× API migration errors in 48h</div>
-                <div class="lui-ii-result slack-notif">
-                  <div class="slack-notif-bar" style="background:#E01E5A;"></div>
-                  <div class="slack-notif-body">
-                    <div class="slack-notif-header">
-                      <svg class="slack-icon" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M6.527 14.514a1.527 1.527 0 1 1-1.527-1.527h1.527v1.527zm.764 0a1.527 1.527 0 0 1 3.054 0v3.822a1.527 1.527 0 0 1-3.054 0v-3.822zM9.486 6.527a1.527 1.527 0 1 1 1.527-1.527v1.527H9.486zm0 .764a1.527 1.527 0 0 1 0 3.054H5.664a1.527 1.527 0 0 1 0-3.054h3.822zM17.473 9.486a1.527 1.527 0 1 1 1.527 1.527h-1.527V9.486zm-.764 0a1.527 1.527 0 0 1-3.054 0V5.664a1.527 1.527 0 0 1 3.054 0v3.822zM14.514 17.473a1.527 1.527 0 1 1-1.527 1.527v-1.527h1.527zm0-.764a1.527 1.527 0 0 1 0-3.054h3.822a1.527 1.527 0 0 1 0 3.054h-3.822z" fill="currentColor"/></svg>
-                      <span class="slack-notif-channel">#engineering</span>
-                      <span class="slack-notif-app">A4 · Feedback Loop</span>
-                    </div>
-                    <div class="slack-notif-msg">🚨 <strong>12× API migration errors</strong> detected in the last 48h — spike above threshold. Ticket cluster flagged for review.</div>
-                  </div>
-                </div>
-              </div>
-              <div class="lui-insight-item lui-aitem">
-                <div class="lui-ii-label">CSAT drop</div>
-                <div class="lui-ii-val">Billing tickets −14% satisfaction</div>
-                <div class="lui-ii-result slack-notif">
-                  <div class="slack-notif-bar" style="background:#36C5F0;"></div>
-                  <div class="slack-notif-body">
-                    <div class="slack-notif-header">
-                      <svg class="slack-icon" viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M6.527 14.514a1.527 1.527 0 1 1-1.527-1.527h1.527v1.527zm.764 0a1.527 1.527 0 0 1 3.054 0v3.822a1.527 1.527 0 0 1-3.054 0v-3.822zM9.486 6.527a1.527 1.527 0 1 1 1.527-1.527v1.527H9.486zm0 .764a1.527 1.527 0 0 1 0 3.054H5.664a1.527 1.527 0 0 1 0-3.054h3.822zM17.473 9.486a1.527 1.527 0 1 1 1.527 1.527h-1.527V9.486zm-.764 0a1.527 1.527 0 0 1-3.054 0V5.664a1.527 1.527 0 0 1 3.054 0v3.822zM14.514 17.473a1.527 1.527 0 1 1-1.527 1.527v-1.527h1.527zm0-.764a1.527 1.527 0 0 1 0-3.054h3.822a1.527 1.527 0 0 1 0 3.054h-3.822z" fill="currentColor"/></svg>
-                      <span class="slack-notif-channel">#product</span>
-                      <span class="slack-notif-app">A4 · Feedback Loop</span>
-                    </div>
-                    <div class="slack-notif-msg">📉 <strong>Billing CSAT dropped −14%</strong> this week. Customer satisfaction below baseline — review billing flow.</div>
-                  </div>
-                </div>
-              </div>
+          <!-- Terminal-style code runner for A4 + A5 -->
+          <div class="b3-terminal" id="b3-terminal">
+            <div class="b3-term-header">
+              <div class="b3-term-dots"><span></span><span></span><span></span></div>
+              <span class="b3-term-title">A4 · Feedback Loop &nbsp;&nbsp;|&nbsp;&nbsp; A5 · Doc Updater</span>
             </div>
-            <div class="lui-insight-col">
-              <div class="lui-insight-head">A5 · Doc Updater</div>
-              <div class="lui-insight-item lui-aitem">
-                <div class="lui-ii-label">Article rewritten</div>
-                <div class="lui-ii-val">v1→v2 migration guide updated</div>
-                <div class="lui-ii-result lui-ii-done">✓ Published</div>
-              </div>
-              <div class="lui-insight-item lui-aitem">
-                <div class="lui-ii-label">FAQ drafted</div>
-                <div class="lui-ii-val">"Why was I charged twice?" — new entry</div>
-                <div class="lui-ii-result lui-ii-done">✓ Approved &amp; live</div>
-              </div>
-              <div class="lui-insight-item lui-aitem">
-                <div class="lui-ii-label">Screenshots flagged</div>
-                <div class="lui-ii-val">Okta SSO guide — 8 outdated images</div>
-                <div class="lui-ii-result lui-ii-done">→ Content lead review</div>
-              </div>
-            </div>
+            <div class="b3-term-body" id="b3-term-body"></div>
           </div>
 
           <!-- Full-width live dashboard -->
@@ -2281,10 +2255,7 @@ function switchTab(tab, btn){
 // LINEAR BLOCK — step-by-step thinking animation, loops forever
 function runBlockAnim(ui){
   const steps   = Array.from(ui.querySelectorAll('.lui-step'));
-  const aitems  = Array.from(ui.querySelectorAll('.lui-aitem'));
-  const hasSteps = steps.length > 0;
-  const hasItems = aitems.length > 0;
-  if(!hasSteps && !hasItems) return;
+  if(!steps.length) return;
 
   const THINK_MS = 1200;
   const HOLD_MS  = 1600;
@@ -2325,84 +2296,12 @@ function runBlockAnim(ui){
     }, THINK_MS);
   }
 
-  // ── Insight items animation (block 3) ──
-  // Interleave A4 and A5 items: a4[0], a5[0], a4[1], a5[1], a4[2], a5[2]
-  function resetItems(){
-    aitems.forEach(item => {
-      item.classList.remove('aitem-show');
-      const res = item.querySelector('.lui-ii-result');
-      if(res) res.classList.remove('result-show');
-      const th = item.querySelector('.lui-thinking');
-      if(th) th.remove();
-    });
-  }
-
-  function animItem(idx, onDone){
-    if(idx >= aitems.length){ onDone(); return; }
-    const item = aitems[idx];
-    const res  = item.querySelector('.lui-ii-result');
-    const val  = item.querySelector('.lui-ii-val');
-
-    // Fade item in
-    item.classList.add('aitem-show');
-
-    // Show thinking after val
-    const th = document.createElement('div');
-    th.className = 'lui-thinking';
-    th.style.marginTop = '4px';
-    th.innerHTML = '<div class="lui-think-dots"><span></span><span></span><span></span></div><span class="lui-think-lbl">Thinking…</span>';
-    item.appendChild(th);
-
-    setTimeout(() => {
-      th.remove();
-      if(res) res.classList.add('result-show');
-      setTimeout(() => animItem(idx + 1, onDone), HOLD_MS);
-    }, THINK_MS);
-  }
-
   function run(){
-    if(hasSteps){
-      resetSteps();
-      setTimeout(() => animStep(0, () => setTimeout(run, RESET_MS)), 400);
-    } else {
-      resetItems();
-      // Interleave: a4 items in col 0, a5 items in col 1
-      // aitems = [a4-0, a4-1, a4-2, a5-0, a5-1, a5-2] — reorder to interleave
-      const cols = Array.from(ui.querySelectorAll('.lui-insight-col'));
-      const a4 = cols[0] ? Array.from(cols[0].querySelectorAll('.lui-aitem')) : [];
-      const a5 = cols[1] ? Array.from(cols[1].querySelectorAll('.lui-aitem')) : [];
-      const interleaved = [];
-      const max = Math.max(a4.length, a5.length);
-      for(let i = 0; i < max; i++){
-        if(a4[i]) interleaved.push(a4[i]);
-        if(a5[i]) interleaved.push(a5[i]);
-      }
-      // Override aitems order with interleaved
-      let iIdx = 0;
-      function animInterleaved(onDone){
-        if(iIdx >= interleaved.length){ onDone(); return; }
-        const item = interleaved[iIdx++];
-        const res  = item.querySelector('.lui-ii-result');
-        item.classList.add('aitem-show');
-        const th = document.createElement('div');
-        th.className = 'lui-thinking';
-        th.style.marginTop = '4px';
-        th.innerHTML = '<div class="lui-think-dots"><span></span><span></span><span></span></div><span class="lui-think-lbl">Thinking…</span>';
-        item.appendChild(th);
-        setTimeout(() => {
-          th.remove();
-          if(res) res.classList.add('result-show');
-          setTimeout(() => animInterleaved(onDone), HOLD_MS);
-        }, THINK_MS);
-      }
-      setTimeout(() => {
-        iIdx = 0;
-        animInterleaved(() => setTimeout(run, RESET_MS));
-      }, 400);
-    }
+    resetSteps();
+    setTimeout(() => animStep(0, () => setTimeout(run, RESET_MS)), 400);
   }
 
-  run();
+  if(hasSteps) run();
 }
 
 document.querySelectorAll('.lblock-ui').forEach(ui => {
@@ -2415,6 +2314,72 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
   }, {threshold: 0.15});
   obs.observe(ui);
 });
+
+// BLOCK 3 TERMINAL ANIMATION
+(function(){
+  const body = document.getElementById('b3-term-body');
+  if(!body) return;
+
+  const LINES = [
+    {text:'<span class="t-dim">$</span> <span class="t-label">A4</span> scanning resolved tickets...', delay:600},
+    {text:'  <span class="t-dim">├</span> pattern_match: <span class="t-bold">12x API migration errors</span> in 48h', delay:400},
+    {text:'  <span class="t-dim">├</span> cluster: v2 endpoint · auth header missing', delay:350},
+    {text:'  <span class="t-dim">├</span> threshold: exceeded (+340%)', delay:300},
+    {text:'  <span class="t-dim">└</span> <span class="t-warn">&#9888; spike flagged</span> → notify <span class="t-info">#engineering</span>', delay:500},
+    {text:'', delay:200},
+    {text:'<span class="t-dim">$</span> <span class="t-label">A4</span> checking CSAT baselines...', delay:600},
+    {text:'  <span class="t-dim">├</span> billing_csat: <span class="t-err">-14%</span> vs 30d avg', delay:400},
+    {text:'  <span class="t-dim">├</span> affected: 23 tickets · 18 unique accounts', delay:350},
+    {text:'  <span class="t-dim">└</span> <span class="t-warn">&#9888; below baseline</span> → notify <span class="t-info">#product</span>', delay:500},
+    {text:'', delay:200},
+    {text:'<span class="t-dim">$</span> <span class="t-label">A5</span> scanning knowledge base...', delay:600},
+    {text:'  <span class="t-dim">├</span> stale_article: "v1→v2 migration guide"', delay:400},
+    {text:'  <span class="t-dim">├</span> rewriting 3 sections · 2 code samples', delay:350},
+    {text:'  <span class="t-dim">└</span> <span class="t-ok">&#10003; published</span> · auto-resolve coverage +4%', delay:500},
+    {text:'', delay:200},
+    {text:'<span class="t-dim">$</span> <span class="t-label">A5</span> drafting new FAQ entry...', delay:600},
+    {text:'  <span class="t-dim">├</span> topic: "Why was I charged twice?"', delay:400},
+    {text:'  <span class="t-dim">├</span> source: 6 billing disputes this week', delay:350},
+    {text:'  <span class="t-dim">└</span> <span class="t-ok">&#10003; approved &amp; live</span>', delay:400},
+    {text:'', delay:200},
+    {text:'<span class="t-dim">$</span> <span class="t-label">A5</span> flagging outdated screenshots...', delay:600},
+    {text:'  <span class="t-dim">├</span> article: "Okta SSO setup guide"', delay:400},
+    {text:'  <span class="t-dim">├</span> found: 8 outdated images · UI changed', delay:350},
+    {text:'  <span class="t-dim">└</span> <span class="t-info">→ content lead review</span>', delay:500},
+    {text:'', delay:300},
+    {text:'<span class="t-dim">---</span> <span class="t-dim">cycle complete · restarting in 3s</span> <span class="t-dim">---</span>', delay:2400},
+  ];
+
+  const MAX_VISIBLE = 18;
+
+  function addLine(idx, onDone){
+    if(idx >= LINES.length){ onDone(); return; }
+    const line = LINES[idx];
+    const el = document.createElement('div');
+    el.className = 'b3-term-line';
+    el.innerHTML = line.text || '&nbsp;';
+    body.appendChild(el);
+    // Trim old lines
+    while(body.children.length > MAX_VISIBLE){
+      body.removeChild(body.firstChild);
+    }
+    setTimeout(() => addLine(idx + 1, onDone), line.delay);
+  }
+
+  function run(){
+    body.innerHTML = '';
+    addLine(0, run);
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(!e.isIntersecting) return;
+      obs.unobserve(body);
+      run();
+    });
+  }, {threshold:0.1});
+  obs.observe(body);
+})();
 
 // A4 LIVE DASHBOARD — 4-day panning view
 (function(){
