@@ -883,11 +883,17 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .wtitle{font-size:10px}
 
   /* Source nodes & architecture diagram */
-  .src-icon{width:44px;height:44px}
+  #diaginner{padding:32px 16px 32px!important}
+  #srcrow{gap:20px!important}
+  .src-icon{width:40px;height:40px}
   .src-lbl{font-size:9px}
-  .anode{padding:16px 16px}
+  .anode{padding:14px 14px}
   .aname{font-size:14px}
   .adesc{font-size:12px}
+  /* Hide flow canvas on mobile — lines don't make sense in carousel */
+  #flowcanvas{display:none!important}
+  /* Reduce diagram container height on mobile */
+  #diagwin > div:first-child{min-height:auto!important}
 
   /* Agent carousel on mobile */
   .agent-carousel{position:relative;overflow:hidden;}
@@ -896,6 +902,8 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .agent-carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:16px;}
   .agent-carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:background .3s;}
   .agent-carousel-dot.active{background:var(--y);}
+  /* Override grid layouts inside carousel slides */
+  .agent-carousel .anode{width:100%}
 
   .lui-insight-grid{grid-template-columns:1fr!important;gap:32px!important;padding:24px 16px 20px!important;}
 
@@ -2190,8 +2198,8 @@ function animDiag(){
     const FRAME_FADE = 350;  // ms transition
     let current = -1;
     const isMobileCarousel = window.innerWidth <= 640;
-    // Map agent index to carousel slide: A1=0, A2=1, A3=1, A4=2, A5=2
-    const AGENT_TO_SLIDE = [0, 1, 1, 2, 2];
+    // Map agent index to carousel slide: one agent per slide
+    const AGENT_TO_SLIDE = [0, 1, 2, 3, 4];
 
     function setFrame(id, on){
       const el = document.getElementById(id);
@@ -2767,74 +2775,44 @@ renderCaseList('resolve');
   setInterval(next, 2800);
 })();
 
-// MOBILE AGENT CAROUSEL
+// MOBILE AGENT CAROUSEL — one agent per slide
 (function(){
   if(window.innerWidth > 640) return;
-  const grid = document.querySelector('#ticket-card-wrap > div > div:last-child'); // the agent grid container
+  const grid = document.querySelector('#ticket-card-wrap > div > div:last-child');
   if(!grid) return;
 
-  const a1 = document.getElementById('a1');
-  const a2 = document.getElementById('a2');
-  const a3 = document.getElementById('a3');
-  const a4 = document.getElementById('a4');
-  const a5 = document.getElementById('a5');
-  if(!a1||!a2||!a3||!a4||!a5) return;
+  const agents = ['a1','a2','a3','a4','a5'].map(id => document.getElementById(id)).filter(Boolean);
+  if(agents.length !== 5) return;
 
-  // Build carousel structure
   const carousel = document.createElement('div');
   carousel.className = 'agent-carousel';
   const track = document.createElement('div');
   track.className = 'agent-carousel-track';
   track.id = 'agent-carousel-track';
 
-  // Slide 0: A1
-  const s0 = document.createElement('div');
-  s0.className = 'agent-carousel-slide';
-  s0.style.display = 'flex';
-  s0.style.flexDirection = 'column';
-  s0.style.gap = '24px';
-  s0.appendChild(a1);
+  agents.forEach(agent => {
+    const slide = document.createElement('div');
+    slide.className = 'agent-carousel-slide';
+    slide.appendChild(agent);
+    track.appendChild(slide);
+  });
 
-  // Slide 1: A2 + A3 stacked
-  const s1 = document.createElement('div');
-  s1.className = 'agent-carousel-slide';
-  s1.style.display = 'flex';
-  s1.style.flexDirection = 'column';
-  s1.style.gap = '24px';
-  s1.appendChild(a2);
-  s1.appendChild(a3);
-
-  // Slide 2: A4 + A5 stacked
-  const s2 = document.createElement('div');
-  s2.className = 'agent-carousel-slide';
-  s2.style.display = 'flex';
-  s2.style.flexDirection = 'column';
-  s2.style.gap = '24px';
-  s2.appendChild(a4);
-  s2.appendChild(a5);
-
-  track.appendChild(s0);
-  track.appendChild(s1);
-  track.appendChild(s2);
   carousel.appendChild(track);
 
-  // Dots
   const dots = document.createElement('div');
   dots.className = 'agent-carousel-dots';
   dots.id = 'agent-carousel-dots';
-  for(let i=0;i<3;i++){
+  for(let i=0;i<5;i++){
     const d = document.createElement('span');
     d.className = 'agent-carousel-dot' + (i===0?' active':'');
     dots.appendChild(d);
   }
   carousel.appendChild(dots);
 
-  // Replace old grid content
   grid.innerHTML = '';
   grid.style.gap = '0';
   grid.appendChild(carousel);
 
-  // Swipe support
   let startX = 0, diffX = 0;
   carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
   carousel.addEventListener('touchmove', e => { diffX = e.touches[0].clientX - startX; });
@@ -2842,7 +2820,7 @@ renderCaseList('resolve');
     if(Math.abs(diffX) > 50){
       const dir = diffX < 0 ? 1 : -1;
       const cur = window._agentCarouselSlide || 0;
-      const next = Math.max(0, Math.min(2, cur + dir));
+      const next = Math.max(0, Math.min(4, cur + dir));
       goToSlide(next);
     }
     diffX = 0;
