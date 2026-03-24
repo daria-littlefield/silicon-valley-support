@@ -890,10 +890,10 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .anode{padding:14px 14px}
   .aname{font-size:14px}
   .adesc{font-size:12px}
-  /* Hide flow canvas on mobile — lines don't make sense in carousel */
-  #flowcanvas{display:none!important}
   /* Reduce diagram container height on mobile */
   #diagwin > div:first-child{min-height:auto!important}
+  /* Agent grids become single column on mobile (fallback if carousel doesn't load) */
+  #ticket-card-wrap div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
 
   /* Agent carousel on mobile */
   .agent-carousel{position:relative;overflow:hidden;}
@@ -1993,7 +1993,8 @@ function startCanvas(){
     const $tc=document.getElementById('ticket-card');
     const $a1=document.getElementById('a1'),$a2=document.getElementById('a2'),$a3=document.getElementById('a3'),$a4=document.getElementById('a4'),$a5=document.getElementById('a5');
     if(!$sf||!$a1)return;
-    const c1=gc($a1),c2=gc($a2),c3=gc($a3),c4=gc($a4),c5=gc($a5);
+    const isMob = window.innerWidth <= 640;
+    const c1=gc($a1);
 
     if($tc){
       const ct=gc($tc);
@@ -2016,7 +2017,11 @@ function startCanvas(){
       });
     }
 
-    // ── Sequential chain: A1 → A2 → A3 → A4 → A5 ──
+    // On mobile, only draw helpdesks→ticket→A1 (carousel handles A2-A5)
+    if(isMob) return;
+
+    // ── Sequential chain: A1 → A2 → A3 → A4 → A5 (desktop only) ──
+    const c2=gc($a2),c3=gc($a3),c4=gc($a4),c5=gc($a5);
     const midY12 = c1.b + 28;
     conns.push({pts:[{x:c1.x,y:c1.b},{x:c1.x,y:midY12},{x:c2.x,y:midY12},{x:c2.x,y:c2.t}]});
     const midY23 = c2.b + 16;
