@@ -892,18 +892,13 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .adesc{font-size:12px}
   /* Reduce diagram container height on mobile */
   #diagwin > div:first-child{min-height:auto!important}
-  /* Agent grids become single column on mobile (fallback if carousel doesn't load) */
+  /* Agent grids become single column on mobile */
   #ticket-card-wrap div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+  /* Remove max-width constraint so agents fill available space */
+  #ticket-card-wrap > div{max-width:none!important}
 
-  /* Agent carousel on mobile */
-  .agent-carousel{position:relative;overflow:hidden;}
-  .agent-carousel-track{display:flex;transition:transform .4s ease;}
-  .agent-carousel-slide{min-width:100%;flex-shrink:0;}
-  .agent-carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:16px;}
-  .agent-carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:background .3s;}
-  .agent-carousel-dot.active{background:var(--y);}
-  /* Override grid layouts inside carousel slides */
-  .agent-carousel .anode{width:100%}
+  /* Agent grid gap tighter on mobile */
+  #ticket-card-wrap div[style*="flex-direction:column"]{gap:24px!important;margin-top:32px!important}
 
   .lui-insight-grid{grid-template-columns:1fr!important;gap:32px!important;padding:24px 16px 20px!important;}
 
@@ -2060,8 +2055,10 @@ function startCanvas(){
       ctx.save();ctx.strokeStyle='rgba(232,232,16,.55)';ctx.lineWidth=1;ctx.setLineDash([]);ctx.lineJoin='round';ctx.stroke(p);ctx.restore();
     });
   }
-  setTimeout(()=>{build();draw();},250);
-  window.addEventListener('resize',()=>setTimeout(()=>{sz();build();},100));
+  setTimeout(()=>{sz();build();draw();},250);
+  // Redraw after layout settles (e.g. mobile stacking)
+  setTimeout(()=>{sz();build();draw();},1500);
+  window.addEventListener('resize',()=>setTimeout(()=>{sz();build();draw();},100));
 }
 
 function animDiag(){
@@ -2202,9 +2199,6 @@ function animDiag(){
     const FRAME_HOLD = 1600; // ms on each agent
     const FRAME_FADE = 350;  // ms transition
     let current = -1;
-    const isMobileCarousel = window.innerWidth <= 640;
-    // Map agent index to carousel slide: one agent per slide
-    const AGENT_TO_SLIDE = [0, 1, 2, 3, 4];
 
     function setFrame(id, on){
       const el = document.getElementById(id);
@@ -2218,10 +2212,6 @@ function animDiag(){
       if(current >= 0) setFrame(ORDER[current], false);
       current = idx;
       setFrame(ORDER[current], true);
-      // Sync carousel on mobile
-      if(isMobileCarousel && window.goToAgentSlide){
-        window.goToAgentSlide(AGENT_TO_SLIDE[current]);
-      }
       setTimeout(() => cycle((idx + 1) % ORDER.length), FRAME_HOLD);
     }
 
@@ -2780,66 +2770,7 @@ renderCaseList('resolve');
   setInterval(next, 2800);
 })();
 
-// MOBILE AGENT CAROUSEL — one agent per slide
-(function(){
-  if(window.innerWidth > 640) return;
-  const grid = document.querySelector('#ticket-card-wrap > div > div:last-child');
-  if(!grid) return;
-
-  const agents = ['a1','a2','a3','a4','a5'].map(id => document.getElementById(id)).filter(Boolean);
-  if(agents.length !== 5) return;
-
-  const carousel = document.createElement('div');
-  carousel.className = 'agent-carousel';
-  const track = document.createElement('div');
-  track.className = 'agent-carousel-track';
-  track.id = 'agent-carousel-track';
-
-  agents.forEach(agent => {
-    const slide = document.createElement('div');
-    slide.className = 'agent-carousel-slide';
-    slide.appendChild(agent);
-    track.appendChild(slide);
-  });
-
-  carousel.appendChild(track);
-
-  const dots = document.createElement('div');
-  dots.className = 'agent-carousel-dots';
-  dots.id = 'agent-carousel-dots';
-  for(let i=0;i<5;i++){
-    const d = document.createElement('span');
-    d.className = 'agent-carousel-dot' + (i===0?' active':'');
-    dots.appendChild(d);
-  }
-  carousel.appendChild(dots);
-
-  grid.innerHTML = '';
-  grid.style.gap = '0';
-  grid.appendChild(carousel);
-
-  let startX = 0, diffX = 0;
-  carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
-  carousel.addEventListener('touchmove', e => { diffX = e.touches[0].clientX - startX; });
-  carousel.addEventListener('touchend', () => {
-    if(Math.abs(diffX) > 50){
-      const dir = diffX < 0 ? 1 : -1;
-      const cur = window._agentCarouselSlide || 0;
-      const next = Math.max(0, Math.min(4, cur + dir));
-      goToSlide(next);
-    }
-    diffX = 0;
-  });
-
-  window._agentCarouselSlide = 0;
-  window.goToAgentSlide = goToSlide;
-  function goToSlide(idx){
-    window._agentCarouselSlide = idx;
-    track.style.transform = `translateX(-${idx * 100}%)`;
-    const allDots = dots.querySelectorAll('.agent-carousel-dot');
-    allDots.forEach((d,i) => d.classList.toggle('active', i === idx));
-  }
-})();
+// (Mobile agents: stacked vertically via CSS, no carousel needed)
 
 // TESTIMONIAL TYPEWRITER
 (function(){
