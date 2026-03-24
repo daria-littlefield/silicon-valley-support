@@ -479,8 +479,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .lui-insight-item:last-child{border-bottom:none;}
 .lui-aitem{opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease;}
 .lui-aitem.aitem-show{opacity:1;transform:translateY(0);}
-.lui-ii-result{display:none;}
-.lui-ii-result.result-show{display:block;animation:fadeUp .3s ease both;}
+.lui-ii-result{visibility:hidden;height:auto;overflow:hidden;}
+.lui-ii-result.result-show{visibility:visible;animation:fadeUp .3s ease both;}
 .lui-ii-label{font-family:'Inter',-apple-system,sans-serif;font-size:11px;font-weight:400;color:rgba(242,242,237,.3);letter-spacing:.01em;text-transform:uppercase;margin-bottom:4px;}
 .lui-ii-val{font-family:'Inter',-apple-system,sans-serif;font-size:14px;font-weight:400;color:var(--fg);margin-bottom:6px;letter-spacing:-.01em;}
 /* Outlined pill for insight result tags */
@@ -497,7 +497,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .lui-ii-pub{border-color:rgba(40,180,100,.35)!important;color:rgba(78,203,130,.85)!important;font-weight:400;}
 /* Completed/done badge - solid colored */
 .lui-ii-done{
-  display:none;
+  visibility:hidden;
   font-family:'Inter',-apple-system,sans-serif;
   font-size:11px;font-weight:500;
   padding:3px 10px;
@@ -508,7 +508,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   margin-top:4px;
   letter-spacing:0;
 }
-.lui-ii-done.result-show{display:inline-block;animation:fadeUp .3s ease both;}
+.lui-ii-done.result-show{visibility:visible;display:inline-block;animation:fadeUp .3s ease both;}
 
 /* Slack notification card */
 .slack-notif{
@@ -776,23 +776,22 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
 /* STARBURST SECTION */
 .burst-sec{position:relative;z-index:2;overflow:hidden;}
 
-.burst-stats{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  background:rgba(13,13,11,.6);
-}
-.bstat{
-  padding:40px 40px;border-right:1px solid var(--border);
-}
-.bstat:last-child{border-right:none;}
+.stat-cycle{background:rgba(13,13,11,.6);text-align:center;padding:48px 40px 36px;position:relative;overflow:hidden;}
+.stat-cycle-inner{position:relative;height:110px;}
+.stat-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:translateX(60px);transition:opacity 220ms ease,transform 220ms ease;pointer-events:none;}
+.stat-slide-active{opacity:1;transform:translateX(0);pointer-events:auto;}
+.stat-slide-out{opacity:0;transform:translateX(-60px);}
 .bstat-n{
   font-family:var(--serif);font-style:italic;
-  font-size:clamp(36px,4vw,64px);font-weight:400;
+  font-size:clamp(48px,6vw,80px);font-weight:400;
   color:var(--fg);letter-spacing:-.02em;line-height:1;margin-bottom:10px;
 }
 .bstat-l{
-  font-size:13px;font-weight:300;color:var(--fg50);line-height:1.5;max-width:180px;
+  font-size:14px;font-weight:300;color:var(--fg50);line-height:1.5;max-width:300px;
 }
+.stat-dots{display:flex;justify-content:center;gap:8px;margin-top:8px;}
+.stat-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:background .3s;}
+.stat-dot-active{background:var(--y);}
 
 .burst-canvas-wrap{
   position:relative;height:440px;overflow:hidden;
@@ -809,8 +808,8 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
 #burst-canvas{display:block;width:100%;height:100%;}
 
 @media(max-width:640px){
-  .burst-stats{grid-template-columns:1fr 1fr;}
-  .bstat{border-bottom:1px solid var(--border);}
+  .stat-cycle{padding:36px 20px 28px}
+  .stat-cycle-inner{height:90px}
   .burst-canvas-wrap{height:320px;}
 }
 .think-wrap{display:flex;align-items:center;gap:8px;margin-top:5px;}
@@ -873,7 +872,8 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
 
   /* Workflow / Architecture */
   .workflow-sec{padding:0 20px 80px}
-  .diag-frame{padding:20px 16px 24px;border-radius:16px}
+  .diag-frame{padding:20px 12px 24px;border-radius:16px}
+  .diag-win{border-radius:10px}
   .arch-tagline{font-size:clamp(18px,4vw,24px)}
   .below-stats-tagline{font-size:clamp(14px,3vw,18px)}
 
@@ -888,6 +888,18 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .anode{padding:16px 16px}
   .aname{font-size:14px}
   .adesc{font-size:12px}
+
+  /* Agent carousel on mobile */
+  .agent-carousel{position:relative;overflow:hidden;}
+  .agent-carousel-track{display:flex;transition:transform .4s ease;}
+  .agent-carousel-slide{min-width:100%;flex-shrink:0;}
+  .agent-carousel-dots{display:flex;justify-content:center;gap:8px;margin-top:16px;}
+  .agent-carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);transition:background .3s;}
+  .agent-carousel-dot.active{background:var(--y);}
+
+  .lui-insight-grid{grid-template-columns:1fr!important;gap:32px!important;padding:24px 16px 20px!important;}
+
+  .burst-sec{display:none}
 
   /* Scroll reveal text */
   .sr-text{padding:60px 20px 16px;font-size:clamp(28px,7vw,44px)}
@@ -918,8 +930,7 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .a4-chart-canvas{height:130px}
 
   /* Starburst / proof */
-  .burst-stats{grid-template-columns:1fr 1fr}
-  .bstat{padding:24px 20px;border-bottom:1px solid var(--border)}
+  .stat-cycle{padding:32px 16px 24px}
   .burst-canvas-wrap{height:280px}
 
   /* Demo / simulator */
@@ -981,11 +992,16 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
 
 <!-- WORKFLOW DIAGRAM -->
 <section class="workflow-sec" id="workflow">
-  <div class="burst-stats" style="max-width:1060px;margin:0 auto 48px;border-radius:14px;overflow:hidden;border:1px solid var(--border);">
-    <div class="bstat"><div class="bstat-n">78%</div><div class="bstat-l">tickets auto-resolved without human touch</div></div>
-    <div class="bstat"><div class="bstat-n">&lt;12s</div><div class="bstat-l">average first response across all priorities</div></div>
-    <div class="bstat"><div class="bstat-n">5</div><div class="bstat-l">coordinated agents running in parallel</div></div>
-    <div class="bstat"><div class="bstat-n">0</div><div class="bstat-l">deflections — every ticket gets a real answer</div></div>
+  <div class="stat-cycle" style="max-width:1060px;margin:0 auto 48px;border-radius:14px;overflow:hidden;border:1px solid var(--border);position:relative;">
+    <div class="stat-cycle-inner" id="stat-cycle">
+      <div class="stat-slide stat-slide-active" data-idx="0"><div class="bstat-n">78%</div><div class="bstat-l">tickets auto-resolved without human touch</div></div>
+      <div class="stat-slide" data-idx="1"><div class="bstat-n">&lt;12s</div><div class="bstat-l">average first response across all priorities</div></div>
+      <div class="stat-slide" data-idx="2"><div class="bstat-n">5</div><div class="bstat-l">coordinated agents running in parallel</div></div>
+      <div class="stat-slide" data-idx="3"><div class="bstat-n">0</div><div class="bstat-l">deflections — every ticket gets a real answer</div></div>
+    </div>
+    <div class="stat-dots" id="stat-dots">
+      <span class="stat-dot stat-dot-active"></span><span class="stat-dot"></span><span class="stat-dot"></span><span class="stat-dot"></span>
+    </div>
   </div>
   <p class="below-stats-tagline rev">Your support team, on autopilot.</p>
   <div class="diag-frame">
@@ -1271,7 +1287,7 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
       <div class="lui-shell">
         <div class="lui-body" style="flex-direction:column;gap:0;padding-bottom:0;">
           <!-- Two-column insights row -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;padding:32px 40px 28px;">
+          <div class="lui-insight-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:48px;padding:32px 40px 28px;">
             <div class="lui-insight-col">
               <div class="lui-insight-head">A4 · Feedback Loop</div>
               <div class="lui-insight-item lui-aitem">
@@ -1329,7 +1345,7 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
           <div class="a4-dashboard" id="a4-dashboard">
             <div class="a4-dash-header">
               <div>
-                <span class="a4-dash-title">Ticket volume · <span class="mobile-hide">last 7 days</span><span class="desktop-hide">Mon–Fri</span></span>
+                <span class="a4-dash-title">Ticket volume · last 7 days</span>
                 <div class="a4-dash-legend" id="a4-legend"></div>
               </div>
               <div class="a4-dash-metrics" id="a4-metrics">
@@ -1433,7 +1449,7 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
 
     <!-- Tagline + CTA -->
     <div class="testi-cta rev">
-      <h2 class="testi-h">Resolve faster. Ship smarter.<br>Turn every ticket into product insight.</h2>
+      <h2 class="testi-h"><span id="testi-typewriter">Resolve issues fast.</span><span class="word-cursor" style="font-weight:700;color:var(--y);margin-left:1px;">|</span></h2>
       <p class="testi-sub">We've done this for 35+ startups. Let's make yours the next one.</p>
       <a href="contact.html" class="btn-y" style="font-weight:300;">Book a call →</a>
     </div>
@@ -1984,24 +2000,6 @@ function startCanvas(){
       // ── CENTER SPINE: ticket bottom → A1 top ──
       conns.push({pts:[{x:ct.x,y:ct.b},{x:ct.x,y:c1.t}]});
 
-      // ── LEFT OUTER RAIL: ticket left edge → down past A2/A3 row → into A4 left ──
-      const railX_L = ct.l - 28;  // left rail x
-      conns.push({pts:[
-        {x:ct.l, y:ct.y},           // exit ticket left edge at midpoint
-        {x:railX_L, y:ct.y},        // step left to rail
-        {x:railX_L, y:c4.y},        // drop down to A4 mid
-        {x:c4.l,   y:c4.y},         // enter A4 left edge
-      ]});
-
-      // ── RIGHT OUTER RAIL: ticket right edge → down → into A5 right ──
-      const railX_R = ct.r + 28;  // right rail x
-      conns.push({pts:[
-        {x:ct.r,   y:ct.y},         // exit ticket right edge at midpoint
-        {x:railX_R, y:ct.y},        // step right to rail
-        {x:railX_R, y:c5.y},        // drop down to A5 mid
-        {x:c5.r,   y:c5.y},         // enter A5 right edge (arrow points left)
-      ]});
-
     } else {
       const midY=c1.t-32;
       [$sf,$zd,$ic,$fd].forEach(s=>{
@@ -2010,10 +2008,15 @@ function startCanvas(){
       });
     }
 
-    // ── A1 → fork → A2 and A3 ──
-    const splitY = c1.b + 28;
-    conns.push({pts:[{x:c1.x,y:c1.b},{x:c1.x,y:splitY},{x:c2.x,y:splitY},{x:c2.x,y:c2.t}]});
-    conns.push({pts:[{x:c1.x,y:c1.b},{x:c1.x,y:splitY},{x:c3.x,y:splitY},{x:c3.x,y:c3.t}]});
+    // ── Sequential chain: A1 → A2 → A3 → A4 → A5 ──
+    const midY12 = c1.b + 28;
+    conns.push({pts:[{x:c1.x,y:c1.b},{x:c1.x,y:midY12},{x:c2.x,y:midY12},{x:c2.x,y:c2.t}]});
+    const midY23 = c2.b + 16;
+    conns.push({pts:[{x:c2.x,y:c2.b},{x:c2.x,y:midY23},{x:c3.x,y:midY23},{x:c3.x,y:c3.t}]});
+    const midY34 = c3.b + 28;
+    conns.push({pts:[{x:c3.x,y:c3.b},{x:c3.x,y:midY34},{x:c4.x,y:midY34},{x:c4.x,y:c4.t}]});
+    const midY45 = c4.b + 16;
+    conns.push({pts:[{x:c4.x,y:c4.b},{x:c4.x,y:midY45},{x:c5.x,y:midY45},{x:c5.x,y:c5.t}]});
   }
 
   // Build a Path2D from waypoints with rounded corners (radius r)
@@ -2039,13 +2042,10 @@ function startCanvas(){
 
   function draw(){
     ctx.clearRect(0,0,cv.width,cv.height);
-    off-=.55;
     conns.forEach(c=>{
       const p=makePath(c.pts,6);
-      ctx.save();ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;ctx.setLineDash([]);ctx.lineJoin='round';ctx.stroke(p);ctx.restore();
-      ctx.save();ctx.strokeStyle='rgba(232,232,16,.45)';ctx.lineWidth=1;ctx.shadowBlur=0;ctx.setLineDash([4,6]);ctx.lineDashOffset=off;ctx.lineJoin='round';ctx.stroke(p);ctx.restore();
+      ctx.save();ctx.strokeStyle='rgba(232,232,16,.55)';ctx.lineWidth=1;ctx.setLineDash([]);ctx.lineJoin='round';ctx.stroke(p);ctx.restore();
     });
-    requestAnimationFrame(draw);
   }
   setTimeout(()=>{build();draw();},250);
   window.addEventListener('resize',()=>setTimeout(()=>{sz();build();},100));
@@ -2189,6 +2189,9 @@ function animDiag(){
     const FRAME_HOLD = 1600; // ms on each agent
     const FRAME_FADE = 350;  // ms transition
     let current = -1;
+    const isMobileCarousel = window.innerWidth <= 640;
+    // Map agent index to carousel slide: A1=0, A2=1, A3=1, A4=2, A5=2
+    const AGENT_TO_SLIDE = [0, 1, 1, 2, 2];
 
     function setFrame(id, on){
       const el = document.getElementById(id);
@@ -2199,16 +2202,18 @@ function animDiag(){
     }
 
     function cycle(idx){
-      // Fade out previous
       if(current >= 0) setFrame(ORDER[current], false);
       current = idx;
-      // Light up current
       setFrame(ORDER[current], true);
+      // Sync carousel on mobile
+      if(isMobileCarousel && window.goToAgentSlide){
+        window.goToAgentSlide(AGENT_TO_SLIDE[current]);
+      }
       setTimeout(() => cycle((idx + 1) % ORDER.length), FRAME_HOLD);
     }
 
     cycle(0);
-  }, 1800); // start after all agents are visible
+  }, 1800);
 
   setTimeout(startCanvas, 1200);
 }
@@ -2412,25 +2417,21 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
   obs.observe(ui);
 });
 
-// A4 LIVE DASHBOARD
+// A4 LIVE DASHBOARD — 4-day panning view
 (function(){
   const dash = document.getElementById('a4-dashboard');
   const cv   = document.getElementById('a4-chart');
   if(!dash || !cv) return;
   const ctx  = cv.getContext('2d');
 
-  // Base 7-day data (Mon–Sun) — tickets per category
-  const DAYS_ALL  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const isMobile = window.innerWidth <= 640;
-  const DAYS = isMobile ? DAYS_ALL.slice(0, 5) : DAYS_ALL;
+  const DAYS_ALL = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const CATS  = [
-    { label:'Password reset', top:'rgba(232,232,16,',  bot:'rgba(232,232,16,',  base: isMobile ? [42,38,45,51,49] : [42,38,45,51,49,28,24] }, // lime
-    { label:'API errors',     top:'rgba(242,242,237,', bot:'rgba(242,242,237,', base: isMobile ? [12,14,11,68,71] : [12,14,11,68,71,18,9]  }, // white
-    { label:'Billing',        top:'rgba(160,160,150,', bot:'rgba(160,160,150,', base: isMobile ? [18,22,19,24,21] : [18,22,19,24,21,15,12] }, // warm grey
-    { label:'Onboarding',     top:'rgba(200,200,190,', bot:'rgba(200,200,190,', base: isMobile ? [28,31,34,30,27] : [28,31,34,30,27,18,14] }, // light grey
+    { label:'Password reset', top:'rgba(232,232,16,',  bot:'rgba(232,232,16,',  base:[42,38,45,51,49,28,24] },
+    { label:'API errors',     top:'rgba(242,242,237,', bot:'rgba(242,242,237,', base:[12,14,11,68,71,18,9]  },
+    { label:'Billing',        top:'rgba(160,160,150,', bot:'rgba(160,160,150,', base:[18,22,19,24,21,15,12] },
+    { label:'Onboarding',     top:'rgba(200,200,190,', bot:'rgba(200,200,190,', base:[28,31,34,30,27,18,14] },
   ];
 
-  // Build legend
   const legendEl = document.getElementById('a4-legend');
   if(legendEl){
     legendEl.innerHTML = CATS.map(c =>
@@ -2438,21 +2439,22 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
     ).join('');
   }
 
-  // Live values that drift over time
   let liveData = CATS.map(c => [...c.base]);
-  let tick = 0;
-  let animFrame = 0;
   let targetData = CATS.map(c => [...c.base]);
-
-  // Current day index (simulated as 4 = Thursday, in the middle of spike)
+  let tick = 0;
   let currentDay = 3;
 
+  // Panning state: viewOffset is a float 0..DAYS_ALL.length-4
+  let viewOffset = 0;
+  let viewTarget = 0;
+  const VISIBLE = 4;
+  const PAN_INTERVAL = 4000; // ms between pans
+  let lastPan = Date.now();
+
   function mutate(){
-    // Slowly evolve today's value to simulate live updates
     targetData = CATS.map((c, ci) => {
       return c.base.map((v, di) => {
         const noise = (Math.random() - 0.48) * 6;
-        // spike category 1 on days 3-4 occasionally surges
         const surge = (ci === 1 && (di === 3 || di === 4)) ? (Math.random() > 0.6 ? 20 : 0) : 0;
         return Math.max(4, Math.round(v + noise + surge));
       });
@@ -2463,32 +2465,38 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
 
   function drawChart(){
     const W = cv.offsetWidth || 800;
-    const H = 160;
+    const H = cv.offsetHeight || 160;
     const DPR = window.devicePixelRatio || 1;
     cv.width  = W * DPR;
     cv.height = H * DPR;
     cv.style.width  = W + 'px';
     cv.style.height = H + 'px';
     ctx.scale(DPR, DPR);
-
     ctx.clearRect(0, 0, W, H);
 
     const PAD_L = 32, PAD_R = 16, PAD_T = 10, PAD_B = 26;
     const chartW = W - PAD_L - PAD_R;
     const chartH = H - PAD_T - PAD_B;
-    const n = DAYS.length;
+    const n = DAYS_ALL.length;
 
     const allVals = liveData.flat();
-    const maxV    = Math.max(...allVals) * 1.2;
+    const maxV = Math.max(...allVals) * 1.2;
 
-    const barGroup  = chartW / n;
-    const totalBarW = barGroup * 0.72;
-    const barW      = totalBarW / CATS.length;
-    const groupOff  = (barGroup - totalBarW) / 2;
+    // Each day occupies chartW/VISIBLE width, but we draw all 7 offset by viewOffset
+    const dayW = chartW / VISIBLE;
+    const totalBarW = dayW * 0.72;
+    const barW = totalBarW / CATS.length;
+    const groupOff = (dayW - totalBarW) / 2;
 
-    // Grid lines + y-axis labels
+    // Clip to chart area
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(PAD_L, 0, chartW, H);
+    ctx.clip();
+
+    // Grid lines
     for(let g = 0; g <= 4; g++){
-      const gy  = PAD_T + chartH - (g / 4) * chartH;
+      const gy = PAD_T + chartH - (g / 4) * chartH;
       const val = Math.round((g / 4) * maxV);
       ctx.beginPath();
       ctx.strokeStyle = g === 0 ? 'rgba(255,255,255,.12)' : 'rgba(255,255,255,.05)';
@@ -2497,51 +2505,44 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
       ctx.lineTo(PAD_L + chartW, gy);
       ctx.stroke();
       if(g > 0){
-        ctx.font = `10px monospace`;
+        ctx.font = '10px monospace';
         ctx.fillStyle = 'rgba(242,242,237,.18)';
         ctx.textAlign = 'right';
         ctx.fillText(val, PAD_L - 4, gy + 4);
       }
     }
 
-    // Bars — transparent glass style
+    // Bars
     CATS.forEach((cat, ci) => {
       liveData[ci].forEach((val, di) => {
-        const x       = PAD_L + di * barGroup + groupOff + ci * barW;
-        const barH    = (val / maxV) * chartH;
-        const y       = PAD_T + chartH - barH;
+        const x = PAD_L + (di - viewOffset) * dayW + groupOff + ci * barW;
+        const barH = (val / maxV) * chartH;
+        const y = PAD_T + chartH - barH;
         const isToday = di === currentDay;
-        const isLime  = ci === 0; // password reset = lime
+        const isLime = ci === 0;
         const isSpike = ci === 1 && (di === 3 || di === 4);
 
-        // Fill alpha — fully solid
         const fillAlpha = isToday ? (isLime ? 1.0 : 0.85) : (isLime ? 0.65 : 0.45);
-        const strokeAlpha = 0;
-
-        // Solid gradient fill — bright top, slightly muted bottom
         const grd = ctx.createLinearGradient(x, y, x, y + barH);
-        grd.addColorStop(0,   cat.top + fillAlpha + ')');
-        grd.addColorStop(1,   cat.top + (fillAlpha * 0.55) + ')');
+        grd.addColorStop(0, cat.top + fillAlpha + ')');
+        grd.addColorStop(1, cat.top + (fillAlpha * 0.55) + ')');
         ctx.beginPath();
         ctx.roundRect(x, y, barW - 1.5, barH, [4,4,4,4]);
         ctx.fillStyle = grd;
         ctx.fill();
 
-        // Lime glow on today only
         if(isLime && isToday){
           ctx.shadowColor = 'rgba(232,232,16,0.5)';
-          ctx.shadowBlur  = 10;
+          ctx.shadowBlur = 10;
           ctx.beginPath();
           ctx.roundRect(x, y, barW - 1.5, barH, [4,4,4,4]);
           ctx.fillStyle = grd;
           ctx.fill();
           ctx.shadowBlur = 0;
         }
-
-        // Spike: brighten white bar
         if(isSpike && ci === 1){
           ctx.shadowColor = 'rgba(242,242,237,0.3)';
-          ctx.shadowBlur  = 6;
+          ctx.shadowBlur = 6;
           ctx.beginPath();
           ctx.roundRect(x, y, barW - 1.5, barH, [4,4,4,4]);
           ctx.fillStyle = grd;
@@ -2551,39 +2552,41 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
       });
     });
 
-    // Today vertical highlight band
-    const todayX = PAD_L + currentDay * barGroup;
-    const bandGrd = ctx.createLinearGradient(todayX, 0, todayX + barGroup, 0);
-    bandGrd.addColorStop(0,   'rgba(232,232,16,0)');
+    // Today highlight band
+    const todayX = PAD_L + (currentDay - viewOffset) * dayW;
+    const bandGrd = ctx.createLinearGradient(todayX, 0, todayX + dayW, 0);
+    bandGrd.addColorStop(0, 'rgba(232,232,16,0)');
     bandGrd.addColorStop(0.5, 'rgba(232,232,16,0.04)');
-    bandGrd.addColorStop(1,   'rgba(232,232,16,0)');
+    bandGrd.addColorStop(1, 'rgba(232,232,16,0)');
     ctx.fillStyle = bandGrd;
-    ctx.fillRect(todayX, PAD_T, barGroup, chartH);
+    ctx.fillRect(todayX, PAD_T, dayW, chartH);
 
     // Day labels
     ctx.textAlign = 'center';
-    DAYS.forEach((d, di) => {
-      const x = PAD_L + di * barGroup + barGroup / 2;
-      ctx.font      = `10px monospace`;
+    DAYS_ALL.forEach((d, di) => {
+      const x = PAD_L + (di - viewOffset) * dayW + dayW / 2;
+      ctx.font = '10px monospace';
       ctx.fillStyle = di === currentDay ? 'rgba(232,232,16,.65)' : 'rgba(242,242,237,.22)';
       ctx.fillText(d, x, H - 6);
     });
+
+    ctx.restore(); // remove clip
   }
 
   function updateMetrics(){
     const todayTotal = liveData.reduce((sum, cat) => sum + cat[currentDay], 0);
-    const spikeVal   = liveData[1][currentDay];
-    const csat       = Math.round(82 - (spikeVal > 60 ? 8 : spikeVal > 40 ? 4 : 0) + (Math.random() - 0.5) * 2);
-    const autoRate   = Math.round(78 - (spikeVal > 60 ? 6 : 0) + (Math.random() - 0.5) * 3);
+    const spikeVal = liveData[1][currentDay];
+    const csat = Math.round(82 - (spikeVal > 60 ? 8 : spikeVal > 40 ? 4 : 0) + (Math.random() - 0.5) * 2);
+    const autoRate = Math.round(78 - (spikeVal > 60 ? 6 : 0) + (Math.random() - 0.5) * 3);
 
     const dmTotal = document.getElementById('dm-total');
     const dmSpike = document.getElementById('dm-spike');
-    const dmCsat  = document.getElementById('dm-csat');
-    const dmAuto  = document.getElementById('dm-auto');
+    const dmCsat = document.getElementById('dm-csat');
+    const dmAuto = document.getElementById('dm-auto');
     if(dmTotal) dmTotal.textContent = todayTotal;
     if(dmSpike){ dmSpike.textContent = spikeVal > 50 ? '⚠ High' : 'Normal'; dmSpike.style.color = spikeVal > 50 ? '#f0a84a' : '#4ecb82'; }
-    if(dmCsat) { dmCsat.textContent  = csat + '%';    dmCsat.style.color  = csat < 80 ? '#f07070' : '#4ecb82'; }
-    if(dmAuto) { dmAuto.textContent  = autoRate + '%'; dmAuto.style.color = autoRate >= 75 ? '#4ecb82' : '#f0a84a'; }
+    if(dmCsat) { dmCsat.textContent = csat + '%'; dmCsat.style.color = csat < 80 ? '#f07070' : '#4ecb82'; }
+    if(dmAuto) { dmAuto.textContent = autoRate + '%'; dmAuto.style.color = autoRate >= 75 ? '#4ecb82' : '#f0a84a'; }
   }
 
   function lerpToTarget(){
@@ -2597,30 +2600,33 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
     if(started) return;
     started = true;
     dash.classList.add('dash-show');
-
-    function frame(){
-      tick++;
-      if(tick % 40 === 0){ mutate(); }        // mutate target every ~2.7s at 15fps
-      if(tick % 6  === 0){ lerpToTarget(); }  // lerp toward target
-      if(tick % 3  === 0){ currentDay = 3 + (tick % 120 > 60 ? 1 : 0); } // oscillate spike day
-      drawChart();
-      if(tick % 20 === 0) updateMetrics();
-      animFrame = requestAnimationFrame(frame);
-    }
-
     mutate();
     updateMetrics();
+
+    setInterval(() => { mutate(); }, 3500);
+
+    function frame(){
+      lerpToTarget();
+      // Pan logic
+      const now = Date.now();
+      if(now - lastPan > PAN_INTERVAL){
+        lastPan = now;
+        viewTarget = viewTarget + (DAYS_ALL.length - VISIBLE);
+        if(viewTarget > DAYS_ALL.length - VISIBLE) viewTarget = 0;
+      }
+      viewOffset = lerp(viewOffset, viewTarget, 0.06);
+      if(Math.abs(viewOffset - viewTarget) < 0.01) viewOffset = viewTarget;
+
+      drawChart();
+      updateMetrics();
+      requestAnimationFrame(frame);
+    }
     frame();
   }
 
-  // Show dashboard after A4 items animate
   const dashObs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if(!e.isIntersecting) return;
-      dashObs.unobserve(dash);
-      setTimeout(startDash, 2200); // delay until items have animated in
-    });
-  }, {threshold: 0.1});
+    entries.forEach(e => { if(e.isIntersecting){ startDash(); dashObs.unobserve(dash); } });
+  }, {threshold:0.1});
   dashObs.observe(dash);
 })();
 
@@ -2741,6 +2747,153 @@ function pick(id){
 
 // Init — show resolve tab by default (called after pick is defined)
 renderCaseList('resolve');
+
+// STAT CYCLE
+(function(){
+  const slides = document.querySelectorAll('.stat-slide');
+  const dots = document.querySelectorAll('.stat-dot');
+  if(!slides.length) return;
+  let cur = 0;
+  function next(){
+    const prev = cur;
+    cur = (cur + 1) % slides.length;
+    slides[prev].classList.remove('stat-slide-active');
+    slides[prev].classList.add('stat-slide-out');
+    dots[prev].classList.remove('stat-dot-active');
+    setTimeout(() => { slides[prev].classList.remove('stat-slide-out'); }, 220);
+    slides[cur].classList.add('stat-slide-active');
+    dots[cur].classList.add('stat-dot-active');
+  }
+  setInterval(next, 2800);
+})();
+
+// MOBILE AGENT CAROUSEL
+(function(){
+  if(window.innerWidth > 640) return;
+  const grid = document.querySelector('#ticket-card-wrap > div > div:last-child'); // the agent grid container
+  if(!grid) return;
+
+  const a1 = document.getElementById('a1');
+  const a2 = document.getElementById('a2');
+  const a3 = document.getElementById('a3');
+  const a4 = document.getElementById('a4');
+  const a5 = document.getElementById('a5');
+  if(!a1||!a2||!a3||!a4||!a5) return;
+
+  // Build carousel structure
+  const carousel = document.createElement('div');
+  carousel.className = 'agent-carousel';
+  const track = document.createElement('div');
+  track.className = 'agent-carousel-track';
+  track.id = 'agent-carousel-track';
+
+  // Slide 0: A1
+  const s0 = document.createElement('div');
+  s0.className = 'agent-carousel-slide';
+  s0.style.display = 'flex';
+  s0.style.flexDirection = 'column';
+  s0.style.gap = '24px';
+  s0.appendChild(a1);
+
+  // Slide 1: A2 + A3 stacked
+  const s1 = document.createElement('div');
+  s1.className = 'agent-carousel-slide';
+  s1.style.display = 'flex';
+  s1.style.flexDirection = 'column';
+  s1.style.gap = '24px';
+  s1.appendChild(a2);
+  s1.appendChild(a3);
+
+  // Slide 2: A4 + A5 stacked
+  const s2 = document.createElement('div');
+  s2.className = 'agent-carousel-slide';
+  s2.style.display = 'flex';
+  s2.style.flexDirection = 'column';
+  s2.style.gap = '24px';
+  s2.appendChild(a4);
+  s2.appendChild(a5);
+
+  track.appendChild(s0);
+  track.appendChild(s1);
+  track.appendChild(s2);
+  carousel.appendChild(track);
+
+  // Dots
+  const dots = document.createElement('div');
+  dots.className = 'agent-carousel-dots';
+  dots.id = 'agent-carousel-dots';
+  for(let i=0;i<3;i++){
+    const d = document.createElement('span');
+    d.className = 'agent-carousel-dot' + (i===0?' active':'');
+    dots.appendChild(d);
+  }
+  carousel.appendChild(dots);
+
+  // Replace old grid content
+  grid.innerHTML = '';
+  grid.style.gap = '0';
+  grid.appendChild(carousel);
+
+  // Swipe support
+  let startX = 0, diffX = 0;
+  carousel.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+  carousel.addEventListener('touchmove', e => { diffX = e.touches[0].clientX - startX; });
+  carousel.addEventListener('touchend', () => {
+    if(Math.abs(diffX) > 50){
+      const dir = diffX < 0 ? 1 : -1;
+      const cur = window._agentCarouselSlide || 0;
+      const next = Math.max(0, Math.min(2, cur + dir));
+      goToSlide(next);
+    }
+    diffX = 0;
+  });
+
+  window._agentCarouselSlide = 0;
+  window.goToAgentSlide = goToSlide;
+  function goToSlide(idx){
+    window._agentCarouselSlide = idx;
+    track.style.transform = `translateX(-${idx * 100}%)`;
+    const allDots = dots.querySelectorAll('.agent-carousel-dot');
+    allDots.forEach((d,i) => d.classList.toggle('active', i === idx));
+  }
+})();
+
+// TESTIMONIAL TYPEWRITER
+(function(){
+  const el = document.getElementById('testi-typewriter');
+  if(!el) return;
+  const phrases = ['Resolve issues fast.', 'Improve product faster.'];
+  let phraseIdx = 0;
+  let charIdx = phrases[0].length;
+  let deleting = false;
+  const TYPE_SPEED = 65;
+  const DELETE_SPEED = 40;
+  const HOLD = 2800;
+
+  function tick(){
+    const phrase = phrases[phraseIdx];
+    if(!deleting){
+      if(charIdx < phrase.length){
+        charIdx++;
+        el.textContent = phrase.slice(0, charIdx);
+        setTimeout(tick, TYPE_SPEED);
+      } else {
+        setTimeout(() => { deleting = true; tick(); }, HOLD);
+      }
+    } else {
+      if(charIdx > 0){
+        charIdx--;
+        el.textContent = phrase.slice(0, charIdx);
+        setTimeout(tick, DELETE_SPEED);
+      } else {
+        deleting = false;
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        setTimeout(tick, 300);
+      }
+    }
+  }
+  setTimeout(() => { deleting = true; tick(); }, HOLD);
+})();
 </script>
 </body>
 </html>
