@@ -68,6 +68,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 }
 @keyframes caret-blink{0%,100%{opacity:1}50%{opacity:0}}
 .hero-sub{margin-top:20px;font-size:17px;font-weight:300;color:var(--fg50);max-width:540px;line-height:1.7;position:relative;z-index:3;animation:fadeUp .6s .2s ease both;text-align:left}
+.hero-stats{display:flex;gap:48px;margin-top:40px;position:relative;z-index:3;animation:fadeUp .6s .25s ease both}
+.hero-stat-n{font-family:var(--serif);font-style:italic;font-size:clamp(36px,5vw,56px);font-weight:400;color:var(--y);letter-spacing:-.02em;line-height:1}
+.hero-stat-l{font-size:12px;font-weight:400;color:var(--fg50);margin-top:6px;letter-spacing:.02em;text-transform:uppercase;font-family:var(--mono)}
 .hero-btns{display:flex;align-items:center;gap:16px;margin-top:44px;position:relative;z-index:3;animation:fadeUp .6s .3s ease both}
 .btn-y{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--bg);font-family:var(--sans);font-weight:300;font-size:14px;padding:13px 26px;border-radius:8px;text-decoration:none;transition:opacity .2s,transform .2s;letter-spacing:-.02em}
 .btn-y:hover{opacity:.88;transform:translateY(-1px)}
@@ -779,11 +782,7 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
 /* STARBURST SECTION */
 .burst-sec{position:relative;z-index:2;overflow:hidden;}
 
-.stat-cycle{background:rgba(13,13,11,.6);text-align:center;padding:48px 40px 36px;position:relative;overflow:hidden;}
-.stat-cycle-inner{position:relative;height:110px;}
-.stat-slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:translateX(60px);transition:opacity 220ms ease,transform 220ms ease;pointer-events:none;}
-.stat-slide-active{opacity:1;transform:translateX(0);pointer-events:auto;}
-.stat-slide-out{opacity:0;transform:translateX(-60px);}
+/* (stat-cycle removed — stats are now static in hero) */
 .bstat-n{
   font-family:var(--serif);font-style:italic;
   font-size:clamp(48px,6vw,80px);font-weight:400;
@@ -868,6 +867,8 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .hero{padding:100px 20px 60px;min-height:auto}
   .hero-h1{font-size:clamp(32px,8vw,48px)}
   .hero-sub{font-size:15px;margin-top:16px}
+  .hero-stats{gap:28px;margin-top:28px}
+  .hero-stat-n{font-size:clamp(28px,7vw,40px)}
   .hero-btns{flex-direction:column;width:100%;gap:12px}
   .btn-y,.btn-ghost{width:100%;justify-content:center;text-align:center}
   .stats{flex-direction:column;gap:24px;margin-top:48px}
@@ -991,6 +992,11 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
 <section class="hero">
   <h1 class="hero-h1">Agentic support infrastructure<br><span class="h1-muted">to <span id="cycling-word">resolve</span><span class="word-cursor">.</span></span></h1>
   <p class="hero-sub">Five AI agents plugged into your existing stack — not a chatbot, but a system that improves your product every single day.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-n">78%</div><div class="hero-stat-l">Auto-Resolved</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">&lt;12s</div><div class="hero-stat-l">First Response</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">5</div><div class="hero-stat-l">AI Agents</div></div>
+  </div>
   <div class="hero-btns">
     <a href="#simulator" class="btn-y">See it in action <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></a>
   </div>
@@ -998,18 +1004,6 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
 
 <!-- WORKFLOW DIAGRAM -->
 <section class="workflow-sec" id="workflow">
-  <div class="stat-cycle" style="max-width:1060px;margin:0 auto 48px;border-radius:14px;overflow:hidden;border:1px solid var(--border);position:relative;">
-    <div class="stat-cycle-inner" id="stat-cycle">
-      <div class="stat-slide stat-slide-active" data-idx="0"><div class="bstat-n">78%</div><div class="bstat-l">tickets auto-resolved without human touch</div></div>
-      <div class="stat-slide" data-idx="1"><div class="bstat-n">&lt;12s</div><div class="bstat-l">average first response across all priorities</div></div>
-      <div class="stat-slide" data-idx="2"><div class="bstat-n">5</div><div class="bstat-l">coordinated agents running in parallel</div></div>
-      <div class="stat-slide" data-idx="3"><div class="bstat-n">0</div><div class="bstat-l">deflections — every ticket gets a real answer</div></div>
-    </div>
-    <div class="stat-dots" id="stat-dots">
-      <span class="stat-dot stat-dot-active"></span><span class="stat-dot"></span><span class="stat-dot"></span><span class="stat-dot"></span>
-    </div>
-  </div>
-  <p class="below-stats-tagline rev">Your support team, on autopilot.</p>
   <div class="diag-frame">
     <div class="diag-frame-bg"></div>
     <div class="slabel" style="margin-bottom:24px;">Architecture</div>
@@ -2747,24 +2741,7 @@ function pick(id){
 // Init — show resolve tab by default (called after pick is defined)
 renderCaseList('resolve');
 
-// STAT CYCLE
-(function(){
-  const slides = document.querySelectorAll('.stat-slide');
-  const dots = document.querySelectorAll('.stat-dot');
-  if(!slides.length) return;
-  let cur = 0;
-  function next(){
-    const prev = cur;
-    cur = (cur + 1) % slides.length;
-    slides[prev].classList.remove('stat-slide-active');
-    slides[prev].classList.add('stat-slide-out');
-    dots[prev].classList.remove('stat-dot-active');
-    setTimeout(() => { slides[prev].classList.remove('stat-slide-out'); }, 220);
-    slides[cur].classList.add('stat-slide-active');
-    dots[cur].classList.add('stat-dot-active');
-  }
-  setInterval(next, 2800);
-})();
+// (Stats are now static in hero section — no cycling needed)
 
 // (Mobile agents: stacked vertically via CSS, no carousel needed)
 
