@@ -228,9 +228,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .pipe-route.pr-show{opacity:1;transform:translateX(0);}
 .pipe-label{font-family:var(--mono);font-size:11px;color:rgba(242,242,237,.3);text-align:center;margin-top:24px;min-height:18px;transition:color .3s;}
 .pipe-label.pl-active{color:var(--y);}
-.pipe-row{display:flex;gap:24px;}
+.pipe-row{display:flex;gap:24px;justify-content:center;}
 .pipe-row-pair{display:flex;gap:24px;}
-.pipe-row .pipe-node{flex:1 1 0;}
+.pipe-row .pipe-node{flex:1 1 0;max-width:calc(50% - 12px);}
 
 .anode-wave{background:transparent;}
 .anode-canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:14px;pointer-events:none;z-index:0;}
