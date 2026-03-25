@@ -215,13 +215,32 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .src-node.vis{opacity:1;transform:translateY(0)}
 .src-icon{width:62px;height:62px;background:var(--bg4);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;justify-content:center;transition:border-color .3s,box-shadow .3s}
 .src-lbl{font-family:var(--mono);font-size:10px;color:var(--fg50);letter-spacing:.04em}
-.anode{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:22px 24px;opacity:0;transform:translateY(12px);transition:opacity .55s ease,transform .55s ease,border-color .3s,box-shadow .3s;position:relative;overflow:hidden;}
+/* Pipeline nodes */
+.pipe-node{width:200px;position:relative;overflow:hidden;background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.10);border-radius:14px;padding:20px 22px;transition:border-color .35s ease,box-shadow .35s ease,opacity .4s ease;}
+.pipe-node.pn-active{border-color:rgba(232,232,16,.65);box-shadow:0 0 0 1px rgba(232,232,16,.12),0 0 28px rgba(232,232,16,.08);}
+.pipe-node.pn-done{border-color:rgba(78,203,130,.3);}
+.pipe-node.pn-dim{opacity:.22;}
+.pipe-header{display:flex;align-items:center;gap:10px;margin-bottom:0;position:relative;z-index:1;}
+.pipe-status{font-family:var(--mono);font-size:10px;color:var(--y);margin-top:8px;min-height:18px;position:relative;z-index:1;opacity:0;transition:opacity .3s;}
+.pipe-status.ps-show{opacity:1;}
+.pipe-status.ps-green{color:#4ecb82;}
+.pipe-route{display:inline-block;font-family:var(--mono);font-size:9px;font-weight:700;background:var(--y);color:var(--bg);padding:2px 8px;border-radius:4px;margin-top:6px;position:relative;z-index:1;opacity:0;transform:translateX(-8px);transition:opacity .3s ease,transform .3s ease;}
+.pipe-route.pr-show{opacity:1;transform:translateX(0);}
+.pipe-label{font-family:var(--mono);font-size:11px;color:rgba(242,242,237,.3);text-align:center;margin-top:24px;min-height:18px;transition:color .3s;}
+.pipe-label.pl-active{color:var(--y);}
+.pipe-info{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(242,242,237,.4);font-size:12px;font-family:var(--mono);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:border-color .2s,color .2s;}
+.pipe-info:hover{border-color:var(--y);color:var(--y);}
+.pipe-tooltip{position:absolute;top:40px;right:0;width:240px;background:rgba(22,22,20,.96);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:12px 14px;font-family:var(--sans);font-size:12px;color:var(--fg50);line-height:1.6;z-index:10;opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .2s,transform .2s;}
+.pipe-info:hover+.pipe-tooltip,.pipe-tooltip:hover{opacity:1;pointer-events:auto;transform:translateY(0);}
+.pipe-row{display:flex;justify-content:center;gap:32px;}
+.pipe-row-pair{display:flex;justify-content:center;gap:32px;}
+.pipe-row .pipe-node{flex:0 0 auto;}
+.pipe-row:first-child .pipe-node{width:100%;}
+
 .anode-wave{background:transparent;}
-.anode-canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:12px;pointer-events:none;z-index:0;}
+.anode-canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:14px;pointer-events:none;z-index:0;}
 .abadge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:3px 8px;font-family:var(--mono);font-size:10px;color:rgba(242,242,237,.5);letter-spacing:.06em;}
 .aname{font-family:var(--sans);font-size:16px;font-weight:600;color:var(--fg);letter-spacing:-.02em}
-.adesc{font-size:13px;color:var(--fg50);margin-top:6px;line-height:1.6}
-.astatus{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;background:var(--y10);color:var(--y)}
 
 /* BLINKING DOT */
 .blink-dot{animation:blink 1.8s ease infinite;}
@@ -878,6 +897,12 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .workflow-sec{padding:0 20px 80px}
   .diag-frame{padding:20px 12px 24px;border-radius:16px}
   .diag-win{border-radius:10px}
+  .pipe-node{width:140px!important;padding:14px 12px}
+  .pipe-row-pair{gap:16px}
+  .pipe-row:first-child .pipe-node{width:100%!important}
+  .aname{font-size:14px}
+  .pipe-tooltip{display:none}
+  #diaginner{padding:32px 16px 36px!important}
   .arch-tagline{font-size:clamp(18px,4vw,24px)}
   .below-stats-tagline{font-size:clamp(14px,3vw,18px)}
 
@@ -895,7 +920,7 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .aname{font-size:14px}
   .adesc{font-size:12px}
   /* Reduce diagram container height on mobile */
-  #diagwin > div:first-child{min-height:auto!important}
+  #arch-container{min-height:auto!important}
   /* Agent grids become single column on mobile */
   #ticket-card-wrap div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
   /* Remove max-width constraint so agents fill available space */
@@ -1009,16 +1034,15 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
     <div class="slabel" style="margin-bottom:24px;">Architecture</div>
     <div class="diag-win" id="diagwin">
 
-    <!-- Plain black background -->
-    <div style="position:relative;min-height:640px;overflow:hidden;background:#0d0d0b;">
-      <canvas id="paintcanvas" style="display:none;"></canvas>
+    <!-- Architecture internals -->
+    <div id="arch-container" style="position:relative;overflow:hidden;background:#0d0d0b;">
 
-      <!-- Flow canvas for animated connections -->
-      <canvas id="flowcanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;"></canvas>
+      <!-- SVG overlay for connection lines -->
+      <svg id="arch-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;"></svg>
 
       <div id="diaginner" style="position:relative;z-index:4;padding:52px 60px 56px;">
 
-        <!-- ROW 1: four helpdesk logos, centered -->
+        <!-- ROW 0: Helpdesk logos -->
         <div id="srcrow" style="display:flex;justify-content:center;gap:52px;margin-bottom:0;">
           <div class="src-node" id="sf">
             <div class="src-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NiA0NiI+CiAgPHBhdGggZD0iTTI3LjUgNS44YTExLjMgMTEuMyAwIDAgMSA4LjEtMy40YzQuMyAwIDguMSAyLjQgMTAuMSA2YTEzIDEzIDAgMCAxIDUuMy0xLjFjNy4yIDAgMTMgNS45IDEzIDEzLjEgMCA3LjMtNS44IDEzLjItMTMgMTMuMkg4LjVDMy44IDMzLjYgMCAyOS44IDAgMjUuMWMwLTQuNCAzLjQtOCA3LjctOC4zYTEwLjYgMTAuNiAwIDAgMS0uNC0zQzcuMyA3LjkgMTIuMyAzIDE4LjUgM2MzLjUgMCA2LjYgMS42IDguOCA0LjF6IiBmaWxsPSIjMDBBMUUwIi8+Cjwvc3ZnPg==" width="42" height="42" style="object-fit:contain;border-radius:4px;" alt="Salesforce"></div>
@@ -1038,7 +1062,7 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
           </div>
         </div>
 
-        <!-- TICKET CARD — cycles through sources -->
+        <!-- TICKET CARD -->
         <div style="display:flex;justify-content:center;margin-top:56px;" id="ticket-card-wrap">
           <div style="width:100%;max-width:560px;">
           <div id="ticket-card" class="tcard" style="max-width:none;">
@@ -1058,64 +1082,57 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
             </div>
           </div>
 
-          <!-- AGENT GRID: same width as ticket card -->
-          <div style="display:flex;flex-direction:column;gap:48px;margin-top:48px;">
+          <!-- PIPELINE: A1 → A2/A3 → A4/A5 -->
+          <div id="pipeline" style="display:flex;flex-direction:column;gap:32px;margin-top:48px;">
 
-            <!-- ROW 1: A1 full width -->
-            <div id="a1" class="anode anode-wave">
-              <canvas class="anode-canvas"></canvas>
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative;z-index:1;">
-                <div class="abadge">A1</div>
-                <div class="aname">Triage Agent</div>
+            <!-- Row 1: A1 full width -->
+            <div class="pipe-row">
+              <div id="a1" class="pipe-node anode-wave">
+                <canvas class="anode-canvas"></canvas>
+                <button class="pipe-info" data-tip="Routes every ticket in under 200ms — priority, category, complexity. VIP accounts and churn signals bypass queues automatically.">›</button>
+                <div class="pipe-header"><div class="abadge">A1</div><div class="aname">Triage Agent</div></div>
+                <div class="pipe-status" id="a1s"></div>
+                <span class="pipe-route" id="a1-route"></span>
               </div>
-              <div class="adesc" style="position:relative;z-index:1;">Routes every ticket in under 200ms — priority, category, complexity.<br>VIP accounts and churn signals bypass queues automatically.</div>
-              <div id="a1s" class="astatus" style="opacity:0;margin-top:8px;position:relative;z-index:1;">⚡ Routing…</div>
             </div>
 
-          <!-- ROW 2: A2 + A3 side by side -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-            <div id="a2" class="anode anode-wave">
-              <canvas class="anode-canvas"></canvas>
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;position:relative;z-index:1;">
-                <div class="abadge">A2</div>
-                <div class="aname">First Response</div>
+            <!-- Row 2: A2 + A3 -->
+            <div class="pipe-row pipe-row-pair">
+              <div id="a2" class="pipe-node anode-wave">
+                <canvas class="anode-canvas"></canvas>
+                <button class="pipe-info" data-tip="Resolves known issues autonomously at 95%+ confidence in under 12 seconds. Everything below threshold goes to A3 with full context loaded.">›</button>
+                <div class="pipe-header"><div class="abadge">A2</div><div class="aname">First Response</div></div>
+                <div class="pipe-status" id="a2s"></div>
               </div>
-              <div class="adesc" style="position:relative;z-index:1;">Resolves known issues autonomously at 95%+ confidence in under 12 seconds.<br>Everything below threshold goes to A3 with full context loaded.</div>
-              <div id="a2s" class="astatus" style="opacity:0;margin-top:8px;position:relative;z-index:1;">Resolved ✓</div>
+              <div id="a3" class="pipe-node anode-wave">
+                <canvas class="anode-canvas"></canvas>
+                <button class="pipe-info" data-tip="Pulls account history and changelogs to draft a complete sourced response. One-click human approval — average review time under 4 minutes.">›</button>
+                <div class="pipe-header"><div class="abadge">A3</div><div class="aname">Deep Diagnosis</div></div>
+                <div class="pipe-status" id="a3s"></div>
+              </div>
             </div>
-            <div id="a3" class="anode anode-wave">
-              <canvas class="anode-canvas"></canvas>
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;position:relative;z-index:1;">
-                <div class="abadge">A3</div>
-                <div class="aname">Deep Diagnosis</div>
+
+            <!-- Row 3: A4 + A5 -->
+            <div class="pipe-row pipe-row-pair">
+              <div id="a4" class="pipe-node anode-wave">
+                <canvas class="anode-canvas"></canvas>
+                <button class="pipe-info" data-tip="Detects patterns across resolved tickets — volume spikes, bug clusters, CSAT drops. Sends weekly signal reports to engineering before issues escalate.">›</button>
+                <div class="pipe-header"><div class="abadge">A4</div><div class="aname">Feedback Loop</div></div>
+                <div class="pipe-status" id="a4s"></div>
               </div>
-              <div class="adesc" style="position:relative;z-index:1;">Pulls account history and changelogs to draft a complete sourced response.<br>One-click human approval — average review time under 4 minutes.</div>
-              <div id="a3s" class="astatus" style="opacity:0;margin-top:8px;position:relative;z-index:1;">Draft ready</div>
+              <div id="a5" class="pipe-node anode-wave">
+                <canvas class="anode-canvas"></canvas>
+                <button class="pipe-info" data-tip="Rewrites stale KB articles and drafts new FAQs from ticket clusters. Content lead approves with one click — keeps A2's resolve rate climbing.">›</button>
+                <div class="pipe-header"><div class="abadge">A5</div><div class="aname">Doc Updater</div></div>
+                <div class="pipe-status" id="a5s"></div>
+              </div>
             </div>
           </div>
 
-          <!-- ROW 3: A4 + A5 side by side -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-            <div id="a4" class="anode anode-wave">
-              <canvas class="anode-canvas"></canvas>
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;position:relative;z-index:1;">
-                <div class="abadge">A4</div>
-                <div class="aname">Feedback Loop</div>
-              </div>
-              <div class="adesc" style="position:relative;z-index:1;">Detects patterns across resolved tickets — volume spikes, bug clusters, CSAT drops.<br>Sends weekly signal reports to engineering before issues escalate.</div>
-            </div>
-            <div id="a5" class="anode anode-wave">
-              <canvas class="anode-canvas"></canvas>
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;position:relative;z-index:1;">
-                <div class="abadge">A5</div>
-                <div class="aname">Doc Updater</div>
-              </div>
-              <div class="adesc" style="position:relative;z-index:1;">Rewrites stale KB articles and drafts new FAQs from ticket clusters.<br>Content lead approves with one click — keeps A2's resolve rate climbing.</div>
-            </div>
-          </div>
+          <!-- Status label -->
+          <div id="pipe-label" class="pipe-label"></div>
 
-        </div><!-- /agent grid -->
-          </div><!-- /shared width wrapper -->
+        </div><!-- /shared width wrapper -->
         </div><!-- /ticket-card-wrap -->
       </div><!-- /diaginner -->
     </div>
@@ -1958,274 +1975,274 @@ function toggleStep(hdr){
   if(!was)step.classList.add('open');
 }
 
-// DIAGRAM ANIMATION
+// DIAGRAM ANIMATION — Pipeline with SVG connections + Scenario A/B cycle
 let diagDone=false;
 
-function startCanvas(){
-  const cv=document.getElementById('flowcanvas');if(!cv)return;
-  const wrap=cv.parentElement;
-  const ctx=cv.getContext('2d');
-  const conns=[];let off=0;
+function hexToRgb(hex){
+  return[parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)].join(',');
+}
 
-  function sz(){cv.width=wrap.offsetWidth;cv.height=wrap.offsetHeight;}
-  sz();
+const SOURCES=[
+  {id:'sf',color:'#00A1E0',glow:'rgba(0,161,224,.35)',id_:'CAS-2291',badge:'P1 · Churn Risk',body:'"We\'re evaluating cancelling our enterprise contract. Our team hasn\'t seen the ROI we expected."',avatar:'JM',avatarBg:'linear-gradient(135deg,#00A1E0,#0076a8)',user:'James Mitchell'},
+  {id:'zd',color:'#03363D',glow:'rgba(3,100,90,.4)',id_:'TKT-8842',badge:'P2 · Billing',body:'"I was charged twice for my annual plan. My card shows two transactions of $299 from this morning."',avatar:'SL',avatarBg:'linear-gradient(135deg,#6366f1,#8b5cf6)',user:'Sarah Liu'},
+  {id:'ic',color:'#1F8FEF',glow:'rgba(31,143,239,.35)',id_:'CNV-5519',badge:'P2 · Technical',body:'"Our API keys stopped working after the v2 migration. We\'re seeing 401 errors on every request since this morning."',avatar:'AR',avatarBg:'linear-gradient(135deg,#1F8FEF,#0066cc)',user:'Alex Rivera'},
+  {id:'fd',color:'#25C16F',glow:'rgba(37,193,111,.35)',id_:'FD-4401',badge:'P3 · Onboarding',body:'"Can you walk me through setting up SSO with Okta? I\'ve followed the docs but the SAML response keeps failing."',avatar:'MT',avatarBg:'linear-gradient(135deg,#25C16F,#1a9955)',user:'Maya Torres'},
+];
+
+// ── SVG connection lines ──
+function buildSVGLines(activeLines){
+  const svg=document.getElementById('arch-svg');
+  const container=document.getElementById('arch-container');
+  if(!svg||!container)return;
+  const cr=container.getBoundingClientRect();
+  svg.setAttribute('width',cr.width);
+  svg.setAttribute('height',cr.height);
+  svg.innerHTML='';
 
   function gc(el){
-    const cr=wrap.getBoundingClientRect(),er=el.getBoundingClientRect();
-    return{x:er.left-cr.left+er.width/2,y:er.top-cr.top+er.height/2,t:er.top-cr.top,b:er.top-cr.top+er.height,l:er.left-cr.left,r:er.left-cr.left+er.width,w:er.width,h:er.height};
+    const er=el.getBoundingClientRect();
+    return{x:er.left-cr.left+er.width/2,y:er.top-cr.top+er.height/2,t:er.top-cr.top,b:er.top-cr.top+er.height,l:er.left-cr.left,r:er.left-cr.left+er.width};
   }
 
-  // Build orthogonal (right-angle) segments for each connection.
-  // Each conn is an array of {x,y} waypoints; we draw with rounded 90° corners.
-  function build(){
-    conns.length=0;
-    const $sf=document.getElementById('sf'),$zd=document.getElementById('zd'),$ic=document.getElementById('ic'),$fd=document.getElementById('fd');
-    const $tc=document.getElementById('ticket-card');
-    const $a1=document.getElementById('a1'),$a2=document.getElementById('a2'),$a3=document.getElementById('a3'),$a4=document.getElementById('a4'),$a5=document.getElementById('a5');
-    if(!$sf||!$a1)return;
-    const isMob = window.innerWidth <= 640;
-    const c1=gc($a1);
+  const $sf=document.getElementById('sf'),$zd=document.getElementById('zd'),$ic=document.getElementById('ic'),$fd=document.getElementById('fd');
+  const $tc=document.getElementById('ticket-card');
+  const $a1=document.getElementById('a1'),$a2=document.getElementById('a2'),$a3=document.getElementById('a3'),$a4=document.getElementById('a4'),$a5=document.getElementById('a5');
+  if(!$sf||!$a1||!$tc)return;
 
-    if($tc){
-      const ct=gc($tc);
-      const srcBusY=ct.t-18;
+  const ct=gc($tc),c1=gc($a1),c2=gc($a2),c3=gc($a3),c4=gc($a4),c5=gc($a5);
+  const srcBusY=ct.t-18;
+  const al=activeLines||[];
 
-      // Sources → horizontal bus → ticket card top
-      [$sf,$zd,$ic,$fd].forEach(s=>{
-        const c=gc(s);
-        conns.push({pts:[{x:c.x,y:c.b},{x:c.x,y:srcBusY},{x:ct.x,y:srcBusY},{x:ct.x,y:ct.t}]});
-      });
+  function isActive(name){return al.indexOf(name)>=0;}
+  function lineColor(name){return isActive(name)?'rgba(232,232,16,.7)':'rgba(232,232,16,.16)';}
 
-      // ── CENTER SPINE: ticket bottom → A1 top ──
-      conns.push({pts:[{x:ct.x,y:ct.b},{x:ct.x,y:c1.t}]});
-
-    } else {
-      const midY=c1.t-32;
-      [$sf,$zd,$ic,$fd].forEach(s=>{
-        const c=gc(s);
-        conns.push({pts:[{x:c.x,y:c.b},{x:c.x,y:midY},{x:c1.x,y:midY},{x:c1.x,y:c1.t}]});
-      });
+  // Helper: draw orthogonal elbow path with arrowhead
+  function drawConn(pts,name){
+    const color=lineColor(name);
+    let d='M'+pts[0].x+','+pts[0].y;
+    for(let i=1;i<pts.length;i++){
+      const prev=pts[i-1],cur=pts[i];
+      if(i<pts.length-1){
+        const next=pts[i+1];
+        const r=6;
+        // arcTo approximation via L segments (SVG path)
+        d+=' L'+cur.x+','+cur.y;
+      } else {
+        d+=' L'+cur.x+','+cur.y;
+      }
     }
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',d);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',color);
+    path.setAttribute('stroke-width','1');
+    path.setAttribute('stroke-linejoin','round');
+    svg.appendChild(path);
 
-    // On mobile, only draw helpdesks→ticket→A1 (carousel handles A2-A5)
-    if(isMob) return;
-
-    // ── Sequential chain: A1 → A2 → A3 → A4 → A5 (desktop only) ──
-    const c2=gc($a2),c3=gc($a3),c4=gc($a4),c5=gc($a5);
-    const midY12 = c1.b + 28;
-    conns.push({pts:[{x:c1.x,y:c1.b},{x:c1.x,y:midY12},{x:c2.x,y:midY12},{x:c2.x,y:c2.t}]});
-    const midY23 = c2.b + 16;
-    conns.push({pts:[{x:c2.x,y:c2.b},{x:c2.x,y:midY23},{x:c3.x,y:midY23},{x:c3.x,y:c3.t}]});
-    const midY34 = c3.b + 28;
-    conns.push({pts:[{x:c3.x,y:c3.b},{x:c3.x,y:midY34},{x:c4.x,y:midY34},{x:c4.x,y:c4.t}]});
-    const midY45 = c4.b + 16;
-    conns.push({pts:[{x:c4.x,y:c4.b},{x:c4.x,y:midY45},{x:c5.x,y:midY45},{x:c5.x,y:c5.t}]});
-  }
-
-  // Build a Path2D from waypoints with rounded corners (radius r)
-  function makePath(pts, r){
-    const p=new Path2D();
-    if(pts.length<2)return p;
-    p.moveTo(pts[0].x,pts[0].y);
-    for(let i=1;i<pts.length-1;i++){
-      p.arcTo(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y,r);
-    }
-    p.lineTo(pts[pts.length-1].x,pts[pts.length-1].y);
-    return p;
-  }
-
-  // Arrow pointing from second-to-last to last point
-  function arw(pts){
+    // Arrowhead at destination
     const e=pts[pts.length-1],p=pts[pts.length-2];
     const a=Math.atan2(e.y-p.y,e.x-p.x);
-    ctx.save();ctx.translate(e.x,e.y);ctx.rotate(a);
-    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-8,-4.5);ctx.lineTo(-8,4.5);
-    ctx.closePath();ctx.fillStyle='rgba(255,255,255,.40)';ctx.fill();ctx.restore();
+    const arrow=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+    const ax=e.x,ay=e.y;
+    const s=5;
+    const p1x=ax-s*Math.cos(a-0.5),p1y=ay-s*Math.sin(a-0.5);
+    const p2x=ax-s*Math.cos(a+0.5),p2y=ay-s*Math.sin(a+0.5);
+    arrow.setAttribute('points',`${ax},${ay} ${p1x},${p1y} ${p2x},${p2y}`);
+    arrow.setAttribute('fill',color);
+    svg.appendChild(arrow);
   }
 
-  function draw(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    conns.forEach(c=>{
-      const p=makePath(c.pts,6);
-      ctx.save();ctx.strokeStyle='rgba(232,232,16,.55)';ctx.lineWidth=1;ctx.setLineDash([]);ctx.lineJoin='round';ctx.stroke(p);ctx.restore();
-    });
+  // Sources → bus → ticket
+  [$sf,$zd,$ic,$fd].forEach(s=>{
+    const c=gc(s);
+    drawConn([{x:c.x,y:c.b},{x:c.x,y:srcBusY},{x:ct.x,y:srcBusY},{x:ct.x,y:ct.t}],'src');
+  });
+
+  // ticket → A1
+  drawConn([{x:ct.x,y:ct.b},{x:c1.x,y:c1.t}],'tc-a1');
+
+  // A1 → A2
+  const m12=c1.b+(c2.t-c1.b)/2;
+  drawConn([{x:c1.x,y:c1.b},{x:c1.x,y:m12},{x:c2.x,y:m12},{x:c2.x,y:c2.t}],'a1-a2');
+
+  // A1 → A3
+  const m13=c1.b+(c3.t-c1.b)/2;
+  drawConn([{x:c1.x,y:c1.b},{x:c1.x,y:m13},{x:c3.x,y:m13},{x:c3.x,y:c3.t}],'a1-a3');
+
+  // A2 → A4
+  const m24=c2.b+(c4.t-c2.b)/2;
+  drawConn([{x:c2.x,y:c2.b},{x:c2.x,y:m24},{x:c4.x,y:m24},{x:c4.x,y:c4.t}],'a2-a4');
+
+  // A2 → A5
+  const m25=c2.b+(c5.t-c2.b)/2;
+  drawConn([{x:c2.x,y:c2.b},{x:c2.x,y:m25},{x:c5.x,y:m25},{x:c5.x,y:c5.t}],'a2-a5');
+
+  // A3 → A4
+  const m34=c3.b+(c4.t-c3.b)/2;
+  drawConn([{x:c3.x,y:c3.b},{x:c3.x,y:m34},{x:c4.x,y:m34},{x:c4.x,y:c4.t}],'a3-a4');
+
+  // A3 → A5
+  const m35=c3.b+(c5.t-c3.b)/2;
+  drawConn([{x:c3.x,y:c3.b},{x:c3.x,y:m35},{x:c5.x,y:m35},{x:c5.x,y:c5.t}],'a3-a5');
+}
+
+// ── Pipeline scenario animation ──
+function wait(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function setNodeState(id,state){
+  const el=document.getElementById(id);if(!el)return;
+  el.classList.remove('pn-active','pn-done','pn-dim');
+  if(state)el.classList.add('pn-'+state);
+}
+
+function setStatus(id,text,green){
+  const el=document.getElementById(id+'s');if(!el)return;
+  el.textContent=text||'';
+  el.classList.toggle('ps-show',!!text);
+  el.classList.toggle('ps-green',!!green);
+}
+
+function setLabel(text,active){
+  const el=document.getElementById('pipe-label');if(!el)return;
+  el.textContent=text||'';
+  el.classList.toggle('pl-active',!!active);
+}
+
+function setRoute(text){
+  const el=document.getElementById('a1-route');if(!el)return;
+  el.textContent=text||'';
+  el.classList.toggle('pr-show',!!text);
+}
+
+async function runScenario(viaA2){
+  const IDS=['a1','a2','a3','a4','a5'];
+  // Reset all
+  IDS.forEach(id=>{setNodeState(id,null);setStatus(id,'');});
+  setLabel('');setRoute('');
+  buildSVGLines([]);
+
+  await wait(400);
+
+  // A1 active
+  setNodeState('a1','active');
+  setStatus('a1','⚡ Low severity');
+  setLabel('A1 triaging ticket…',true);
+  buildSVGLines(['src','tc-a1']);
+  await wait(1600);
+
+  // Route pill
+  const routeTo=viaA2?'LOW → A2':'HIGH → A3';
+  setRoute(routeTo);
+  // Dim the unused path lines
+  const activeA=viaA2?'a2':'a3';
+  const dimA=viaA2?'a3':'a2';
+  const dimLines=viaA2?['a1-a3','a3-a4','a3-a5']:['a1-a2','a2-a4','a2-a5'];
+  await wait(800);
+
+  // A1 done, active agent lights up
+  setNodeState('a1','done');setStatus('a1','Routed ✓',true);setRoute('');
+  setNodeState(activeA,'active');
+  setNodeState(dimA,'dim');
+  setStatus(activeA,viaA2?'Resolving…':'Diagnosing…');
+  setLabel(viaA2?'A2 resolving autonomously…':'A3 deep diagnosis…',true);
+  const activeLines=viaA2?['src','tc-a1','a1-a2']:['src','tc-a1','a1-a3'];
+  buildSVGLines(activeLines);
+  await wait(1900);
+
+  // Active agent done, A4+A5 active
+  setNodeState(activeA,'done');
+  setStatus(activeA,viaA2?'Resolved ✓':'Draft ready ✓',true);
+  setNodeState('a4','active');setNodeState('a5','active');
+  setStatus('a4','Scanning patterns…');setStatus('a5','Updating docs…');
+  setLabel('A4 + A5 running in parallel…',true);
+  const finalLines=viaA2?[...activeLines,'a2-a4','a2-a5']:[...activeLines,'a3-a4','a3-a5'];
+  buildSVGLines(finalLines);
+  await wait(1900);
+
+  // All done
+  setNodeState('a4','done');setNodeState('a5','done');
+  setStatus('a4','Patterns logged ✓',true);setStatus('a5','KB updated ✓',true);
+  setLabel('✓ Pipeline complete',true);
+  await wait(2600);
+}
+
+async function pipelineLoop(){
+  let viaA2=true;
+  while(true){
+    await runScenario(viaA2);
+    viaA2=!viaA2;
   }
-  setTimeout(()=>{sz();build();draw();},250);
-  // Redraw after layout settles (e.g. mobile stacking)
-  setTimeout(()=>{sz();build();draw();},1500);
-  window.addEventListener('resize',()=>setTimeout(()=>{sz();build();draw();},100));
+}
+
+// ── Ticket card cycling ──
+let currentSrc=-1;
+function cycleTickets(){
+  currentSrc=(currentSrc+1)%SOURCES.length;
+  const s=SOURCES[currentSrc];
+  // Light source icon
+  SOURCES.forEach(src=>{
+    const n=document.getElementById(src.id);if(!n)return;
+    const icon=n.querySelector('.src-icon');if(!icon)return;
+    if(src.id===s.id){
+      icon.style.borderColor=s.color;
+      icon.style.boxShadow=`0 0 20px ${s.glow}, 0 0 40px ${s.glow}`;
+      icon.style.background=`rgba(${hexToRgb(s.color)},.08)`;
+    }else{
+      icon.style.borderColor='';icon.style.boxShadow='';icon.style.background='';
+    }
+  });
+  // Swap card
+  const inner=document.getElementById('tcard-inner-content');
+  if(inner){
+    inner.style.opacity='0';inner.style.transform='translateY(6px)';
+    setTimeout(()=>{
+      document.getElementById('tc-id').textContent=s.id_;
+      document.getElementById('tc-badge').textContent=s.badge;
+      document.getElementById('tc-body').textContent=s.body;
+      document.getElementById('tc-avatar').textContent=s.avatar;
+      document.getElementById('tc-avatar').style.background=s.avatarBg;
+      document.getElementById('tc-user').textContent=s.user;
+      inner.style.transition='opacity 350ms ease,transform 350ms ease';
+      inner.style.opacity='1';inner.style.transform='translateY(0)';
+    },350);
+  }
 }
 
 function animDiag(){
   if(diagDone)return;diagDone=true;
 
-  // Source data — brand colors + unique tickets per helpdesk
-  const SOURCES = [
-    {
-      id:'sf', color:'#00A1E0', glow:'rgba(0,161,224,.35)',
-      logoSvg:`<svg width="14" height="14" viewBox="0 0 66 46" style="flex-shrink:0;opacity:.85"><path d="M27.5 5.8a11.3 11.3 0 0 1 8.1-3.4c4.3 0 8.1 2.4 10.1 6a13 13 0 0 1 5.3-1.1c7.2 0 13 5.9 13 13.1 0 7.3-5.8 13.2-13 13.2H8.5C3.8 33.6 0 29.8 0 25.1c0-4.4 3.4-8 7.7-8.3a10.6 10.6 0 0 1-.4-3C7.3 7.9 12.3 3 18.5 3c3.5 0 6.6 1.6 8.8 4.1z" fill="#00A1E0"/></svg>`,
-      source:'Salesforce', id_:'CAS-2291', badge:'P1 · Churn Risk', badgeClass:'tcard-p2',
-      body:'"We\'re evaluating cancelling our enterprise contract. Our team hasn\'t seen the ROI we expected."',
-      avatar:'JM', avatarBg:'linear-gradient(135deg,#00A1E0,#0076a8)', user:'James Mitchell',
-    },
-    {
-      id:'zd', color:'#03363D', glow:'rgba(3,100,90,.4)',
-      logoSvg:`<svg width="14" height="14" viewBox="0 0 128 128" style="flex-shrink:0;opacity:.85"><path d="M61.3 48.2v51.4L14 48.2h47.3z" fill="#03363D"/><path d="M14 99.6a23.65 23.65 0 0 1 0-51.4v51.4zM66.7 28a23.65 23.65 0 0 1 0 51.4V28zM66.7 28v51.4L114 28H66.7z" fill="#03363D"/></svg>`,
-      source:'Zendesk', id_:'TKT-8842', badge:'P2 · Billing', badgeClass:'tcard-p2',
-      body:'"I was charged twice for my annual plan. My card shows two transactions of $299 from this morning."',
-      avatar:'SL', avatarBg:'linear-gradient(135deg,#6366f1,#8b5cf6)', user:'Sarah Liu',
-    },
-    {
-      id:'ic', color:'#1F8FEF', glow:'rgba(31,143,239,.35)',
-      logoSvg:`<svg width="14" height="14" viewBox="0 0 128 128" style="flex-shrink:0;opacity:.85"><rect width="128" height="128" rx="24" fill="#1F8FEF"/><path d="M103 16H25A9 9 0 0 0 16 25v60a9 9 0 0 0 9 9h13v15l18-15h47a9 9 0 0 0 9-9V25a9 9 0 0 0-9-9z" fill="white"/><circle cx="44" cy="55" r="7" fill="#1F8FEF"/><circle cx="64" cy="55" r="7" fill="#1F8FEF"/><circle cx="84" cy="55" r="7" fill="#1F8FEF"/></svg>`,
-      source:'Intercom', id_:'CNV-5519', badge:'P2 · Technical', badgeClass:'tcard-p2',
-      body:'"Our API keys stopped working after the v2 migration. We\'re seeing 401 errors on every request since this morning."',
-      avatar:'AR', avatarBg:'linear-gradient(135deg,#1F8FEF,#0066cc)', user:'Alex Rivera',
-    },
-    {
-      id:'fd', color:'#25C16F', glow:'rgba(37,193,111,.35)',
-      logoSvg:`<svg width="14" height="14" viewBox="0 0 128 128" style="flex-shrink:0;opacity:.85"><rect width="128" height="128" rx="24" fill="#25C16F"/><path d="M34 96V54c0-22 16-36 36-36s36 14 36 36v8H70c-10 0-18 8-18 18v16H34z" fill="white"/><rect x="52" y="80" width="52" height="16" rx="4" fill="white"/></svg>`,
-      source:'Freshdesk', id_:'FD-4401', badge:'P3 · Onboarding', badgeClass:'tcard-p2',
-      body:'"Can you walk me through setting up SSO with Okta? I\'ve followed the docs but the SAML response keeps failing."',
-      avatar:'MT', avatarBg:'linear-gradient(135deg,#25C16F,#1a9955)', user:'Maya Torres',
-    },
-  ];
-
-  let currentSrc = -1;
-  const HOLD = 2200;   // ms lit up
-  const FADE = 350;    // ms card fade
-
-  // Show all sources at dim opacity first
-  SOURCES.forEach(s => {
-    const n = document.getElementById(s.id);
-    if(!n) return;
-    n.style.opacity = '1';
-    n.style.transform = 'translateY(0)';
-    n.classList.add('vis');
+  // Reveal sources
+  document.querySelectorAll('.src-node').forEach((n,i)=>{
+    setTimeout(()=>{n.style.opacity='1';n.style.transform='translateY(0)';n.classList.add('vis');},i*80);
   });
 
-  // Show ticket card
-  setTimeout(() => {
-    const tc = document.getElementById('ticket-card');
-    if(tc) tc.classList.add('vis');
-  }, 400);
+  // Reveal ticket
+  setTimeout(()=>{const tc=document.getElementById('ticket-card');if(tc)tc.classList.add('vis');},400);
 
-  function lightSource(idx) {
-    const s = SOURCES[idx];
+  // Reveal pipeline nodes
+  ['a1','a2','a3','a4','a5'].forEach((id,i)=>{
+    setTimeout(()=>{const el=document.getElementById(id);if(el){el.style.opacity='1';}},600+i*150);
+  });
 
-    // Dim previous
-    if(currentSrc >= 0) {
-      const prev = SOURCES[currentSrc];
-      const pn = document.getElementById(prev.id);
-      if(pn) {
-        const pi = pn.querySelector('.src-icon');
-        if(pi){ pi.style.borderColor=''; pi.style.boxShadow=''; pi.style.background=''; }
-      }
-    }
-    currentSrc = idx;
+  // Start ticket cycling
+  setTimeout(()=>{cycleTickets();setInterval(cycleTickets,2200);},700);
 
-    // Light current with brand color
-    const n = document.getElementById(s.id);
-    if(n) {
-      const icon = n.querySelector('.src-icon');
-      if(icon){
-        icon.style.borderColor = s.color;
-        icon.style.boxShadow = `0 0 20px ${s.glow}, 0 0 40px ${s.glow}`;
-        icon.style.background = `rgba(${hexToRgb(s.color)},.08)`;
-      }
-    }
-
-    // Swap ticket card content
-    const inner = document.getElementById('tcard-inner-content');
-    if(inner){
-      inner.style.opacity = '0';
-      inner.style.transform = 'translateY(6px)';
-      setTimeout(() => {
-        document.getElementById('tc-id').textContent = s.id_;
-        document.getElementById('tc-badge').textContent = s.badge;
-        document.getElementById('tc-body').textContent = s.body;
-        document.getElementById('tc-avatar').textContent = s.avatar;
-        document.getElementById('tc-avatar').style.background = s.avatarBg;
-        document.getElementById('tc-user').textContent = s.user;
-        inner.style.transition = `opacity ${FADE}ms ease, transform ${FADE}ms ease`;
-        inner.style.opacity = '1';
-        inner.style.transform = 'translateY(0)';
-      }, FADE);
-    }
-
-    // Schedule next
-    setTimeout(() => lightSource((idx + 1) % SOURCES.length), HOLD);
-  }
-
-  function hexToRgb(hex){
-    const r = parseInt(hex.slice(1,3),16);
-    const g = parseInt(hex.slice(3,5),16);
-    const b = parseInt(hex.slice(5,7),16);
-    return `${r},${g},${b}`;
-  }
-
-  // Start cycling after initial reveal
-  setTimeout(() => lightSource(0), 700);
-
-  // Reveal agents in sequence: A1 → A4+A5 → A2+A3
-  function showAgent(id, delay, extraStyle){
-    setTimeout(() => {
-      const el = document.getElementById(id);
-      if(!el) return;
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-      if(extraStyle) Object.assign(el.style, extraStyle);
-      const badge = document.getElementById(id+'s');
-      if(badge) setTimeout(() => { badge.style.opacity='1'; }, 300);
-    }, delay);
-  }
-
-  showAgent('a1', 400);
-  showAgent('a4', 900);
-  showAgent('a5', 900);
-  showAgent('a2', 1400);
-  showAgent('a3', 1400);
-
-  // Lime frame cycles through agents after all are visible
-  setTimeout(() => {
-    const ORDER = ['a1','a2','a3','a4','a5'];
-    const FRAME_HOLD = 1600; // ms on each agent
-    const FRAME_FADE = 350;  // ms transition
-    let current = -1;
-
-    function setFrame(id, on){
-      const el = document.getElementById(id);
-      if(!el) return;
-      el.style.transition = `border-color ${FRAME_FADE}ms ease, box-shadow ${FRAME_FADE}ms ease, opacity .55s ease, transform .55s ease`;
-      el.style.borderColor = on ? 'rgba(232,232,16,.55)' : 'rgba(255,255,255,.10)';
-      el.style.boxShadow   = on ? '0 0 0 1px rgba(232,232,16,.15), 0 0 24px rgba(232,232,16,.08)' : 'none';
-    }
-
-    function cycle(idx){
-      if(current >= 0) setFrame(ORDER[current], false);
-      current = idx;
-      setFrame(ORDER[current], true);
-      setTimeout(() => cycle((idx + 1) % ORDER.length), FRAME_HOLD);
-    }
-
-    cycle(0);
-  }, 1800);
-
-  setTimeout(startCanvas, 1200);
+  // Build initial SVG lines after layout settles, then start pipeline
+  setTimeout(()=>{buildSVGLines([]);pipelineLoop();},1200);
 }
 
-// set initial states — src-nodes only (anodes start hidden via CSS)
+// Init states
 document.querySelectorAll('.src-node').forEach(n=>{n.style.opacity='0';n.style.transform='translateY(-8px)';n.style.transition='opacity .4s ease,transform .4s ease';});
+document.querySelectorAll('.pipe-node').forEach(n=>{n.style.opacity='0';n.style.transition='opacity .4s ease,border-color .35s ease,box-shadow .35s ease';});
 
-const diagIO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){animDiag();diagIO.unobserve(x.target);}});},{threshold:0, rootMargin:'0px 0px -100px 0px'});
-const dw=document.getElementById('diagwin');
+// Redraw SVG on resize
+window.addEventListener('resize',()=>{if(diagDone)buildSVGLines([]);});
+
+const diagIO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){animDiag();diagIO.unobserve(x.target);}});},{threshold:0,rootMargin:'0px 0px -100px 0px'});
+const dw=document.getElementById('arch-container');
 if(dw){
   diagIO.observe(dw);
-  // Fallback: if already in view on load, fire immediately
-  setTimeout(()=>{
-    const r=dw.getBoundingClientRect();
-    if(r.top<window.innerHeight*0.9) animDiag();
-  }, 300);
+  setTimeout(()=>{const r=dw.getBoundingClientRect();if(r.top<window.innerHeight*0.9)animDiag();},300);
 }
 
 // SIMULATOR
