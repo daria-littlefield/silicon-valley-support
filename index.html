@@ -2494,7 +2494,9 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
   let liveData = CATS.map(c => [...c.base]);
   let targetData = CATS.map(c => [...c.base]);
   let tick = 0;
-  let currentDay = 3;
+  let currentDay = 0;
+  const DAY_CYCLE_MS = 2200; // ms per highlighted day
+  let lastDayCycle = 0;
 
   // Panning state: viewOffset is a float 0..DAYS_ALL.length-4
   let viewOffset = 0;
@@ -2653,19 +2655,24 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
     started = true;
     dash.classList.add('dash-show');
     mutate();
+    lastDayCycle = Date.now();
     updateMetrics();
 
     setInterval(() => { mutate(); }, 3500);
 
     function frame(){
       lerpToTarget();
-      // Pan logic
       const now = Date.now();
-      if(now - lastPan > PAN_INTERVAL){
-        lastPan = now;
-        viewTarget = viewTarget + (DAYS_ALL.length - VISIBLE);
-        if(viewTarget > DAYS_ALL.length - VISIBLE) viewTarget = 0;
+
+      // Day highlight cycling: Mon→Tue→...→Sun→Mon
+      if(now - lastDayCycle > DAY_CYCLE_MS){
+        lastDayCycle = now;
+        currentDay = (currentDay + 1) % DAYS_ALL.length;
       }
+
+      // Pan logic — keep highlighted day in view
+      const idealOffset = Math.max(0, Math.min(currentDay - 1, DAYS_ALL.length - VISIBLE));
+      viewTarget = idealOffset;
       viewOffset = lerp(viewOffset, viewTarget, 0.06);
       if(Math.abs(viewOffset - viewTarget) < 0.01) viewOffset = viewTarget;
 
