@@ -427,6 +427,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 .lui-body{padding:32px 40px 40px;display:flex;flex-direction:column;gap:24px;}
 
+/* Blocks 1.0 + 2.0: ticket left, steps right on desktop */
+#lblock-1 .lui-body,
+#lblock-2 .lui-body{flex-direction:row;gap:32px;align-items:flex-start;}
+#lblock-1 .lui-ticket,
+#lblock-2 .lui-ticket{flex:0 0 48%;max-width:48%;}
+#lblock-1 .lui-pipeline-scroll,
+#lblock-2 .lui-pipeline-scroll{flex:1;min-width:0;height:320px;}
+
 /* Ticket card inside block */
 .lui-ticket{
   background:rgba(255,255,255,.04);
@@ -978,6 +986,12 @@ footer{padding:48px;border-top:1px solid var(--border);display:flex;align-items:
   .lblock-header{grid-template-columns:1fr;gap:20px;margin-bottom:40px}
   .lblock-desc{font-size:15px}
   .lui-body{padding:20px 16px 24px}
+  #lblock-1 .lui-body,
+  #lblock-2 .lui-body{flex-direction:column;gap:24px;}
+  #lblock-1 .lui-ticket,
+  #lblock-2 .lui-ticket{flex:none;max-width:100%;}
+  #lblock-1 .lui-pipeline-scroll,
+  #lblock-2 .lui-pipeline-scroll{flex:none;height:174px;}
   #lblock-3 .lblock-ui{height:auto;min-height:560px}
   .lui-ticket{padding:14px 16px}
   .lui-pipeline{max-width:100%}
