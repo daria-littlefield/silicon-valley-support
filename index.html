@@ -2357,6 +2357,8 @@ function runBlockAnim(ui){
 
     // 1. Row slides in — agent name visible, description hidden
     s.style.opacity = '1';
+    // Scroll up immediately when new step appears
+    if(scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
 
     // 2. Thinking dots for THINK_MS
     const th = document.createElement('div');
@@ -2371,13 +2373,10 @@ function runBlockAnim(ui){
         // 4. Description fades in
         if(act) act.classList.add('act-show');
         if(out) out.classList.add('out-show');
+        // Scroll again after description expands content
+        if(scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
 
-        // 5. Scroll to keep latest visible (when idx >= 2)
-        if(idx >= 2 && scrollEl){
-          scrollEl.scrollTop = scrollEl.scrollHeight;
-        }
-
-        // 6. Hold, then next step
+        // 5. Hold, then next step
         setTimeout(() => animStep(idx + 1, onDone), HOLD_MS);
       }, NAME_MS);
     }, THINK_MS);
