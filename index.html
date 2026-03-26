@@ -2627,8 +2627,7 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
   function updateMetrics(){
     const todayTotal = liveData.reduce((sum, cat) => sum + cat[currentDay], 0);
     const spikeVal = liveData[1][currentDay];
-    const csat = Math.round(82 - (spikeVal > 60 ? 8 : spikeVal > 40 ? 4 : 0) + (Math.random() - 0.5) * 2);
-    const autoRate = Math.round(78 - (spikeVal > 60 ? 6 : 0) + (Math.random() - 0.5) * 3);
+    const autoRate = Math.round(78 - (spikeVal > 60 ? 6 : 0) + (currentDay % 3) - 1);
 
     const dmTotal = document.getElementById('dm-total');
     const dmSpike = document.getElementById('dm-spike');
@@ -2662,9 +2661,11 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
       const now = Date.now();
 
       // Day highlight cycling: Mon→Tue→...→Sun→Mon
+      let dayChanged = false;
       if(now - lastDayCycle > DAY_CYCLE_MS){
         lastDayCycle = now;
         currentDay = (currentDay + 1) % DAYS_ALL.length;
+        dayChanged = true;
       }
 
       // Pan logic — keep highlighted day in view
@@ -2674,7 +2675,7 @@ document.querySelectorAll('.lblock-ui').forEach(ui => {
       if(Math.abs(viewOffset - viewTarget) < 0.01) viewOffset = viewTarget;
 
       drawChart();
-      updateMetrics();
+      if(dayChanged) updateMetrics();
       requestAnimationFrame(frame);
     }
     frame();
